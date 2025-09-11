@@ -834,8 +834,16 @@ function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostna
 
 function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostname: string; count: number; lastAt: string; lastSender: string }> }) {
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
   
   const links = Object.values(linkMap)
+
+  const toggleGroup = (hostname: string) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [hostname]: !prev[hostname]
+    }))
+  }
 
   const groupedLinks = useMemo(() => {
     const groups: Record<string, Array<{ url: string; hostname: string; count: number; lastAt: string; lastSender: string }>> = {}
@@ -862,6 +870,13 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
       })
   }, [links, sortBy])
 
+  // İlk grup otomatik olarak açık olsun
+  useEffect(() => {
+    if (groupedLinks.length > 0 && Object.keys(expandedGroups).length === 0) {
+      setExpandedGroups({ [groupedLinks[0].hostname]: true })
+    }
+  }, [groupedLinks, expandedGroups])
+
   if (links.length === 0) {
     return null 
   }
@@ -871,6 +886,34 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">Site Bazında Gruplandırılmış Linkler</h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const allExpanded = groupedLinks.every(group => expandedGroups[group.hostname])
+              const newState: Record<string, boolean> = {}
+              groupedLinks.forEach(group => {
+                newState[group.hostname] = !allExpanded
+              })
+              setExpandedGroups(newState)
+            }}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm hover:bg-gray-50 focus:border-emerald-500 focus:outline-none transition-colors"
+            title={groupedLinks.every(group => expandedGroups[group.hostname]) ? "Tümünü Daralt" : "Tümünü Genişlet"}
+          >
+            {groupedLinks.every(group => expandedGroups[group.hostname]) ? (
+              <div className="flex items-center gap-1">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+                Daralt
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                Genişlet
+              </div>
+            )}
+          </button>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
@@ -895,15 +938,25 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
             className="rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white overflow-hidden"
           >
             {/* Group Header */}
-            <div className="bg-gradient-to-r from-emerald-500 to-cyan-600 px-4 py-3">
+            <button
+              onClick={() => toggleGroup(group.hostname)}
+              className="w-full bg-gradient-to-r from-emerald-500 to-cyan-600 px-4 py-3 transition-all hover:from-emerald-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                    <svg 
+                      className={`h-4 w-4 text-white transition-transform duration-200 ${
+                        expandedGroups[group.hostname] ? 'rotate-90' : ''
+                      }`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="text-left">
                     <h3 className="font-semibold text-white">{group.hostname}</h3>
                     <p className="text-xs text-white/80">{group.links.length} farklı link</p>
                   </div>
@@ -917,11 +970,12 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
                   </div>
                 </div>
               </div>
-            </div>
+            </button>
 
             {/* Group Links */}
-            <div className="divide-y divide-gray-100">
-              {group.links.map((link) => (
+            {expandedGroups[group.hostname] && (
+              <div className="divide-y divide-gray-100 animate-fade-in">
+                {group.links.map((link) => (
                 <div key={link.url} className="group px-4 py-3 transition-colors hover:bg-gray-50">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -968,7 +1022,8 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
