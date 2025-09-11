@@ -6,11 +6,18 @@ import type { Channel as PusherChannel } from 'pusher-js'
 type KickChannel = Record<string, unknown>
 
 export default function App() {
-  const [username, setUsername] = useState<string>('')
+  const [username, setUsername] = useState<string>(() => {
+    try {
+      return localStorage.getItem('kick-chat-username') || ''
+    } catch {
+      return ''
+    }
+  })
   const [channel, setChannel] = useState<KickChannel | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [messages, setMessages] = useState<Array<{ id: string; username: string; message: string; createdAt?: string }>>([])
+  const [hasEverConnected, setHasEverConnected] = useState<boolean>(false)
 
   type LinkStat = {
     url: string
@@ -43,6 +50,7 @@ export default function App() {
       }
       const data = (await response.json()) as KickChannel
       setChannel(data)
+      setHasEverConnected(true)
     } catch (error) {
       if ((error as Error).name === 'AbortError') return
       setErrorMessage((error as Error).message || 'Bilinmeyen bir hata oluştu')
@@ -53,15 +61,22 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController()
-    // İlk yüklemede varsayılan kullanıcıyı getir
-    void fetchChannel(controller.signal)
+    if (username.trim()) {
+      void fetchChannel(controller.signal)
+    }
     return () => controller.abort()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Kick chat'e bağlan: chatroom id üzerinden Pusher subscribe
   useEffect(() => {
-    // mevcut aboneliği temizle
+    if (username.trim()) {
+      try {
+        localStorage.setItem('kick-chat-username', username.trim())
+      } catch {
+      }
+    }
+  }, [username])
+
+  useEffect(() => {
     if (subscriptionRef.current) {
       try {
         subscriptionRef.current.unbind_all()
@@ -92,14 +107,12 @@ export default function App() {
 
       const handler = (raw: any) => {
         let payload: any = raw
-        // Bazı durumlarda Pusher veriyi { data: "...json..." } veya direkt string döndürebilir
         if (typeof payload === 'string') {
           try { payload = JSON.parse(payload) } catch {}
         }
         if (payload && typeof payload.data === 'string') {
           try { payload = JSON.parse(payload.data) } catch {}
         }
-        // Kick bazı eventlerde mesajı payload.message altında da gönderebiliyor
         const msg = payload?.message ?? payload
 
         const messageId = String(msg?.id ?? (typeof crypto !== 'undefined' && (crypto as any).randomUUID?.()) ?? `${Date.now()}`)
@@ -110,7 +123,6 @@ export default function App() {
         if (!content) return
         setMessages((prev) => [...prev, { id: messageId, username: userName, message: content, createdAt }])
 
-        // Link çıkarımı ve gruplama
         const urls = extractUrls(content)
         if (urls.length > 0) {
           setLinkMap((prev) => {
@@ -171,80 +183,100 @@ export default function App() {
               </div>
             </div>
 
-            {/* Search Form */}
-            <form
-              className="flex w-full max-w-md items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl xl:w-auto"
-              onSubmit={(e) => {
-                e.preventDefault()
-                void fetchChannel()
-              }}
-            >
-              <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
-                placeholder="Yayıncı kullanıcı adını girin..."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                spellCheck={false}
-              />
-              <button
-                type="submit"
-                disabled={!username.trim() || isLoading}
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+            {/* Search Form and Controls */}
+            <div className="flex w-full items-center gap-4 xl:w-auto">
+              <form
+                className="flex w-full max-w-md items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl xl:w-auto"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  void fetchChannel()
+                }}
               >
-                {isLoading ? (
-                  <>
-                    <svg className="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                    Bağlanıyor...
-                  </>
-                ) : (
-                  'Bağlan'
-                )}
-              </button>
+                <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+                  placeholder="Yayıncı kullanıcı adını girin..."
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  spellCheck={false}
+                />
+                <button
+                  type="submit"
+                  disabled={!username.trim() || isLoading}
+                  className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      Bağlanıyor...
+                    </>
+                  ) : (
+                    'Bağlan'
+                  )}
+                </button>
+              </form>
               
               {/* Connection Toggle Switch */}
-              {channel && (
-                <div className="flex items-center gap-3">
+              {hasEverConnected && (
+                <div className="flex items-center gap-3 rounded-xl bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm border border-emerald-200/50">
                   <span className="text-sm font-medium text-gray-700">Bağlantı:</span>
                   <button
                     type="button"
                     onClick={() => {
-                      // Disconnect from current channel
-                      setChannel(null)
-                      setMessages([])
-                      setLinkMap({})
-                      setErrorMessage(null)
-                      
-                      // Clean up subscriptions
-                      if (subscriptionRef.current) {
-                        try {
-                          subscriptionRef.current.unbind_all()
-                          const existingName = (subscriptionRef.current as any)?.name as string | undefined
-                          if (existingName) pusherRef.current?.unsubscribe(existingName)
-                        } catch {}
+                      if (channel) {
+                        setChannel(null)
+                        setMessages([])
+                        setLinkMap({})
+                        setErrorMessage(null)
+                        
+                        if (subscriptionRef.current) {
+                          try {
+                            subscriptionRef.current.unbind_all()
+                            const existingName = (subscriptionRef.current as any)?.name as string | undefined
+                            if (existingName) pusherRef.current?.unsubscribe(existingName)
+                          } catch {}
+                        }
+                        subscriptionRef.current = null
+                      } else {
+                        void fetchChannel()
                       }
-                      subscriptionRef.current = null
                     }}
-                    className="relative inline-flex h-6 w-11 items-center rounded-full bg-gradient-to-r from-emerald-500 to-cyan-600 shadow-lg transition-all duration-300 hover:from-emerald-600 hover:to-cyan-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-                    title="Bağlantıyı kes"
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                      channel 
+                        ? 'bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 hover:shadow-xl focus:ring-emerald-500' 
+                        : 'bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 hover:shadow-xl focus:ring-gray-400'
+                    }`}
+                    title={channel ? "Bağlantıyı kes" : "Tekrar bağlan"}
                   >
-                    <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 translate-x-6">
-                      <svg className="h-3 w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                      channel ? 'translate-x-6' : 'translate-x-1'
+                    }`}>
+                      {channel ? (
+                        <svg className="h-3 w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="h-3 w-3 text-gray-500 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      )}
                     </span>
                   </button>
-                  <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
-                    Aktif
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    channel 
+                      ? 'text-emerald-700 bg-emerald-50' 
+                      : 'text-gray-600 bg-gray-100'
+                  }`}>
+                    {channel ? 'Aktif' : 'Bağlı Değil'}
                   </span>
                 </div>
               )}
-            </form>
+            </div>
           </div>
         </div>
       </header>
@@ -360,7 +392,6 @@ export default function App() {
   )
 }
 
-// Loading Skeleton Component
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
@@ -409,7 +440,6 @@ function LoadingSkeleton() {
   )
 }
 
-// Channel Info Panel Component
 function ChannelInfoPanel({ channel, username }: { channel: KickChannel; username: string }) {
   const isOnline = !!(channel as any)?.livestream
   const viewerCount = (channel as any)?.livestream?.viewer_count || 0
@@ -481,7 +511,6 @@ function ChannelInfoPanel({ channel, username }: { channel: KickChannel; usernam
   )
 }
 
-// Stat Card Component
 function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
     <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-cyan-50 p-4 border border-emerald-100/50">
@@ -498,12 +527,14 @@ function StatCard({ label, value, icon }: { label: string; value: string; icon: 
   )
 }
 
-// Chat Panel Component
 function ChatPanel({ messages }: { messages: Array<{ id: string; username: string; message: string; createdAt?: string }> }) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messagesContainerRef.current && messages.length > 0) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }
   }, [messages])
 
   return (
@@ -529,7 +560,10 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
           <p className="text-sm text-gray-500">Mesajlar yüklenmeyi bekliyor...</p>
         </div>
       ) : (
-        <div className="max-h-96 overflow-y-auto space-y-1 pr-2">
+        <div 
+          ref={messagesContainerRef}
+          className="max-h-96 overflow-y-auto space-y-1 pr-2 scroll-smooth"
+        >
           {messages.map((message) => (
             <div key={message.id} className="message-bubble group px-3 py-2 transition-colors">
               <div className="flex items-start gap-3">
@@ -555,7 +589,6 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
   )
 }
 
-// Welcome Screen Component
 function WelcomeScreen() {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -595,18 +628,14 @@ function WelcomeScreen() {
   )
 }
 
-// Helpers: URL çıkarımı ve normalizasyon
 function extractUrls(text: string): string[] {
   if (!text) return []
-  // Daha kesin URL regex - sadece rakamla başlayanları engelle
   const urlLike = text.match(/((https?:\/\/)?(?:[a-z][\w.-]*|[\w.-]*[a-z][\w.-]*)\.[a-z]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?)/gi) || []
-  // Mentions/emails vs gerçek domain ayırımı için basit filtre
   return urlLike
     .map((u) => (u.startsWith('http') ? u : `https://${u}`))
     .filter((u) => {
       try { 
         const test = new URL(u)
-        // Hostname'in sadece rakam.harf formatında olmaması için kontrol ekle
         const hostname = test.hostname
         if (/^\d+\.[a-z]+$/i.test(hostname)) return false
         return !!hostname && hostname.includes('.')
@@ -620,11 +649,9 @@ function normalizeUrl(raw: string): string | null {
   try {
     const u = new URL(raw)
     u.hash = ''
-    // normalize common trackers
     const params = new URLSearchParams(u.search)
     ;['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid'].forEach((k) => params.delete(k))
     u.search = params.toString() ? `?${params.toString()}` : ''
-    // lowercase hostname, remove default ports, trim trailing slash
     u.hostname = u.hostname.toLowerCase()
     if ((u.protocol === 'http:' && u.port === '80') || (u.protocol === 'https:' && u.port === '443')) {
       u.port = ''
@@ -764,13 +791,11 @@ function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostna
   )
 }
 
-// Grouped Links Panel Component
 function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostname: string; count: number; lastAt: string; lastSender: string }> }) {
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
   
   const links = Object.values(linkMap)
 
-  // Group links by hostname
   const groupedLinks = useMemo(() => {
     const groups: Record<string, Array<{ url: string; hostname: string; count: number; lastAt: string; lastSender: string }>> = {}
     
@@ -781,7 +806,6 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
       groups[link.hostname].push(link)
     })
     
-    // Sort groups by total count or most recent activity
     return Object.entries(groups)
       .map(([hostname, hostLinks]) => ({
         hostname,
@@ -798,7 +822,7 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
   }, [links, sortBy])
 
   if (links.length === 0) {
-    return null // Hide the component if no links
+    return null 
   }
 
   return (
