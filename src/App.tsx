@@ -153,33 +153,42 @@ export default function App() {
   }, [channel])
 
   return (
-    <div className="min-h-dvh bg-gray-50 text-gray-900">
-      <div className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-2xl font-semibold">Kick Link Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-600">Chatte paylaşılan linkleri benzersiz olarak topla ve sırala.</p>
+    <div className="min-h-dvh bg-gradient-to-b from-emerald-50 to-white text-gray-900">
+      <header className="sticky top-0 z-10 border-b border-emerald-100/60 bg-white/70 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-4 py-3">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+            <div>
+              <h1 className="text-xl font-semibold text-emerald-900">Kick Link Dashboard</h1>
+              <p className="mt-0.5 text-xs text-emerald-700/80">Chatte paylaşılan linkleri benzersiz olarak topla ve sırala</p>
+            </div>
+            <form
+              className="flex w-full max-w-md items-center gap-2 rounded-lg border border-emerald-200 bg-white px-2 py-1.5 shadow-sm sm:w-auto"
+              onSubmit={(e) => {
+                e.preventDefault()
+                void fetchChannel()
+              }}
+            >
+              <input
+                className="w-full rounded-md px-2 py-1.5 text-sm outline-none placeholder:text-gray-400"
+                placeholder="yayıncı kullanıcı adı"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                spellCheck={false}
+              />
+              <button
+                type="submit"
+                disabled={!username.trim() || isLoading}
+                className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoading ? 'Yükleniyor…' : 'Bağlan'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </header>
+      <div className="mx-auto max-w-6xl px-4 py-6">
 
-        <form
-          className="mt-6 flex flex-col gap-3 sm:flex-row"
-          onSubmit={(e) => {
-            e.preventDefault()
-            void fetchChannel()
-          }}
-        >
-          <input
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base outline-none ring-2 ring-transparent transition focus:border-gray-400 focus:ring-emerald-200"
-            placeholder="yayıncı kullanıcı adı"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            spellCheck={false}
-          />
-          <button
-            type="submit"
-            disabled={!username.trim() || isLoading}
-            className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoading ? 'Yükleniyor…' : 'Bağlan'}
-          </button>
-        </form>
+        {/* eski inline form kaldırıldı; header'da arama çubuğu var */}
 
         {errorMessage && (
           <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-700">
