@@ -153,7 +153,7 @@ export default function App() {
   }, [channel])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900 flex flex-col">
       {/* Modern Header with Glass Effect */}
       <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
         <div className="mx-auto max-w-7xl px-4 py-4">
@@ -206,11 +206,49 @@ export default function App() {
                   'Bağlan'
                 )}
               </button>
+              
+              {/* Connection Toggle Switch */}
+              {channel && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-gray-700">Bağlantı:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Disconnect from current channel
+                      setChannel(null)
+                      setMessages([])
+                      setLinkMap({})
+                      setErrorMessage(null)
+                      
+                      // Clean up subscriptions
+                      if (subscriptionRef.current) {
+                        try {
+                          subscriptionRef.current.unbind_all()
+                          const existingName = (subscriptionRef.current as any)?.name as string | undefined
+                          if (existingName) pusherRef.current?.unsubscribe(existingName)
+                        } catch {}
+                      }
+                      subscriptionRef.current = null
+                    }}
+                    className="relative inline-flex h-6 w-11 items-center rounded-full bg-gradient-to-r from-emerald-500 to-cyan-600 shadow-lg transition-all duration-300 hover:from-emerald-600 hover:to-cyan-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    title="Bağlantıyı kes"
+                  >
+                    <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 translate-x-6">
+                      <svg className="h-3 w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </button>
+                  <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
+                    Aktif
+                  </span>
+                </div>
+              )}
             </form>
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 flex-1">
         {/* Error Message */}
         {errorMessage && (
           <div className="animate-fade-in mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 shadow-md">
@@ -246,6 +284,9 @@ export default function App() {
               <LinksPanel linkMap={linkMap} />
               <ChatPanel messages={messages} />
             </div>
+
+            {/* Grouped Links Panel */}
+            <GroupedLinksPanel linkMap={linkMap} />
           </div>
         )}
 
@@ -254,6 +295,67 @@ export default function App() {
           <WelcomeScreen />
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-emerald-200/50 bg-gradient-to-r from-emerald-50/80 to-cyan-50/80 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="flex flex-col items-center justify-center gap-4 text-center">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
+                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-bold gradient-text">Kick Chat Analytics</h3>
+                <p className="text-sm text-emerald-700/80">Gerçek zamanlı chat izleme aracı</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <span>© {new Date().getFullYear()} Created with ❤️ by</span>
+                <a
+                  href="https://x.com/JausWolf"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center gap-1 font-semibold text-emerald-700 transition-all hover:text-emerald-800 hover:underline"
+                >
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  JausWolf
+                </a>
+              </div>
+              
+              <div className="flex items-center gap-4 text-xs text-gray-500">
+                <span className="flex items-center gap-1">
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Real-time chat monitoring
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  Link analytics
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Smart grouping
+                </span>
+              </div>
+              
+              <div className="mt-2 text-xs text-gray-400">
+                Made for the Kick.com streaming community
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
@@ -496,12 +598,21 @@ function WelcomeScreen() {
 // Helpers: URL çıkarımı ve normalizasyon
 function extractUrls(text: string): string[] {
   if (!text) return []
-  const urlLike = text.match(/((https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?)/gi) || []
+  // Daha kesin URL regex - sadece rakamla başlayanları engelle
+  const urlLike = text.match(/((https?:\/\/)?(?:[a-z][\w.-]*|[\w.-]*[a-z][\w.-]*)\.[a-z]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?)/gi) || []
   // Mentions/emails vs gerçek domain ayırımı için basit filtre
   return urlLike
     .map((u) => (u.startsWith('http') ? u : `https://${u}`))
     .filter((u) => {
-      try { const test = new URL(u); return !!test.hostname && test.hostname.includes('.') } catch { return false }
+      try { 
+        const test = new URL(u)
+        // Hostname'in sadece rakam.harf formatında olmaması için kontrol ekle
+        const hostname = test.hostname
+        if (/^\d+\.[a-z]+$/i.test(hostname)) return false
+        return !!hostname && hostname.includes('.')
+      } catch { 
+        return false 
+      }
     })
 }
 
@@ -649,6 +760,153 @@ function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostna
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// Grouped Links Panel Component
+function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostname: string; count: number; lastAt: string; lastSender: string }> }) {
+  const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
+  
+  const links = Object.values(linkMap)
+
+  // Group links by hostname
+  const groupedLinks = useMemo(() => {
+    const groups: Record<string, Array<{ url: string; hostname: string; count: number; lastAt: string; lastSender: string }>> = {}
+    
+    links.forEach(link => {
+      if (!groups[link.hostname]) {
+        groups[link.hostname] = []
+      }
+      groups[link.hostname].push(link)
+    })
+    
+    // Sort groups by total count or most recent activity
+    return Object.entries(groups)
+      .map(([hostname, hostLinks]) => ({
+        hostname,
+        links: hostLinks,
+        totalCount: hostLinks.reduce((sum, link) => sum + link.count, 0),
+        lastActivity: Math.max(...hostLinks.map(link => new Date(link.lastAt).getTime()))
+      }))
+      .sort((a, b) => {
+        if (sortBy === 'popular') {
+          return b.totalCount - a.totalCount || b.lastActivity - a.lastActivity
+        }
+        return b.lastActivity - a.lastActivity
+      })
+  }, [links, sortBy])
+
+  if (links.length === 0) {
+    return null // Hide the component if no links
+  }
+
+  return (
+    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Site Bazında Gruplandırılmış Linkler</h2>
+        <div className="flex items-center gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="recent">En Yeni</option>
+            <option value="popular">En Popüler</option>
+          </select>
+          <div className="flex items-center gap-1 text-sm text-gray-600">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            {groupedLinks.length} site
+          </div>
+        </div>
+      </div>
+      
+      <div className="max-h-96 overflow-y-auto space-y-4 pr-2">
+        {groupedLinks.map((group) => (
+          <div
+            key={group.hostname}
+            className="rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white overflow-hidden"
+          >
+            {/* Group Header */}
+            <div className="bg-gradient-to-r from-emerald-500 to-cyan-600 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">{group.hostname}</h3>
+                    <p className="text-xs text-white/80">{group.links.length} farklı link</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-white/20 px-3 py-1 text-xs font-bold text-white">
+                    Toplam: ×{group.totalCount}
+                  </div>
+                  <div className="text-xs text-white/80">
+                    {formatTimeAgo(new Date(group.lastActivity).toISOString())} önce
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Group Links */}
+            <div className="divide-y divide-gray-100">
+              {group.links.map((link) => (
+                <div key={link.url} className="group px-4 py-3 transition-colors hover:bg-gray-50">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="block text-sm font-medium text-gray-900 hover:text-emerald-700 transition-colors truncate group-hover:underline mb-2"
+                        title={link.url}
+                      >
+                        {link.url.replace(/^https?:\/\//, '').replace(group.hostname, '')}
+                      </a>
+                      
+                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          {link.lastSender}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {formatTimeAgo(link.lastAt)} önce
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <div className="rounded-lg bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700">
+                        ×{link.count}
+                      </div>
+                      <button
+                        onClick={() => navigator.clipboard?.writeText(link.url)}
+                        className="opacity-0 group-hover:opacity-100 flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-gray-200"
+                        title="Linki kopyala"
+                      >
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
