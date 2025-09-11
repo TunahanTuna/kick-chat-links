@@ -246,9 +246,6 @@ export default function App() {
               <LinksPanel linkMap={linkMap} />
               <ChatPanel messages={messages} />
             </div>
-
-            {/* Raw JSON - Collapsible */}
-            <RawDataPanel channel={channel} />
           </div>
         )}
 
@@ -450,38 +447,6 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
             </div>
           ))}
           <div ref={messagesEndRef} />
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Raw Data Panel Component
-function RawDataPanel({ channel }: { channel: KickChannel }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  
-  return (
-    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex w-full items-center justify-between text-left"
-      >
-        <h2 className="text-xl font-bold text-gray-900">Ham JSON Verisi</h2>
-        <svg
-          className={`h-5 w-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      
-      {isExpanded && (
-        <div className="mt-4 rounded-xl bg-gray-900 p-4">
-          <pre className="max-h-96 overflow-auto text-xs text-emerald-100">
-            {JSON.stringify(channel, null, 2)}
-          </pre>
         </div>
       )}
     </div>
