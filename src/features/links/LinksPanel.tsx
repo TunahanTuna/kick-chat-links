@@ -8,6 +8,7 @@ interface LinksPanelProps {
 
 export function LinksPanel({ linkMap }: LinksPanelProps) {
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
   
   const links = Object.values(linkMap)
     .sort((a, b) => {
@@ -56,7 +57,7 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
               key={link.url}
               className="group rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-secondary hover:bg-theme-tertiary p-2.5 sm:p-3 lg:p-4 transition-all hover:border-theme-accent"
             >
-              <div className="flex items-start justify-between gap-2 sm:gap-3">
+              <div className="flex items-center justify-between gap-2 sm:gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                     <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded bg-theme-secondary flex-shrink-0">
@@ -100,13 +101,23 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
                     ×{link.count}
                   </div>
                   <button
-                    onClick={() => navigator.clipboard?.writeText(link.url)}
-                    className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-theme-secondary text-theme-secondary transition-all hover:bg-theme-tertiary"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(link.url)
+                      setCopiedUrl(link.url)
+                      setTimeout(() => setCopiedUrl(null), 2000)
+                    }}
+                    className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-theme-secondary text-theme-secondary transition-all hover:bg-theme-tertiary cursor-pointer relative"
                     title="Linki kopyala"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
+                    {copiedUrl === link.url && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-theme-primary text-theme-card px-2 py-1 rounded text-xs whitespace-nowrap z-10 animate-fade-in">
+                        Kopyalandı!
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-theme-primary"></div>
+                      </div>
+                    )}
                   </button>
                 </div>
               </div>
