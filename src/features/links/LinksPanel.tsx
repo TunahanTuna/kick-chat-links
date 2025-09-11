@@ -1,0 +1,119 @@
+import { useState } from 'react'
+import type { LinkStat } from '../../types'
+import { formatTimeAgo } from '../../shared/utils'
+
+interface LinksPanelProps {
+  linkMap: Record<string, LinkStat>
+}
+
+export function LinksPanel({ linkMap }: LinksPanelProps) {
+  const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
+  
+  const links = Object.values(linkMap)
+    .sort((a, b) => {
+      if (sortBy === 'popular') {
+        return b.count - a.count || new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
+      }
+      return new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
+    })
+
+  return (
+    <div className="rounded-lg sm:rounded-2xl bg-white/90 p-3 sm:p-4 lg:p-6 shadow-lg border border-white/20 backdrop-blur-sm h-[320px] sm:h-[380px] lg:h-[440px] xl:h-[500px] flex flex-col">
+      <div className="mb-2 sm:mb-3 lg:mb-4 flex flex-col gap-1.5 sm:gap-2 sm:flex-row sm:items-center sm:justify-between flex-shrink-0">
+        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Paylaşılan Linkler</h2>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
+            className="rounded-md sm:rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="recent">En Yeni</option>
+            <option value="popular">En Popüler</option>
+          </select>
+          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            <span className="hidden xs:inline sm:hidden lg:inline">{links.length}</span>
+            <span className="xs:hidden sm:inline lg:hidden">{links.length}</span>
+          </div>
+        </div>
+      </div>
+      
+      {links.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center flex-1">
+          <div className="mb-2 sm:mb-3 lg:mb-4 rounded-full bg-gray-100 p-2 sm:p-3">
+            <svg className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </div>
+          <p className="text-xs sm:text-sm text-gray-500">Henüz hiç link paylaşılmadı</p>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto space-y-1.5 sm:space-y-2 lg:space-y-3 pr-1 sm:pr-2">
+          {links.map((link) => (
+            <div
+              key={link.url}
+              className="group rounded-lg sm:rounded-xl border border-gray-100 bg-gradient-to-r from-gray-50 to-white p-2.5 sm:p-3 lg:p-4 transition-all hover:border-emerald-200 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between gap-2 sm:gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                    <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded bg-emerald-100 flex-shrink-0">
+                      <svg className="h-3 w-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full truncate">
+                      {link.hostname}
+                    </span>
+                  </div>
+                  
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="block text-xs sm:text-sm font-medium text-gray-900 hover:text-emerald-700 transition-colors truncate group-hover:underline"
+                    title={link.url}
+                  >
+                    {link.url}
+                  </a>
+                  
+                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {link.lastSender}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatTimeAgo(link.lastAt)} önce
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                    ×{link.count}
+                  </div>
+                  <button
+                    onClick={() => navigator.clipboard?.writeText(link.url)}
+                    className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-gray-200"
+                    title="Linki kopyala"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
