@@ -641,11 +641,20 @@ function WelcomeScreen() {
 function extractUrls(text: string): string[] {
   if (!text) return []
   
-  const urlRegex = /(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(?:\/[^\s]*)?/gi
+  // Updated regex to only match URLs that start with https://, http://, or www.
+  const urlRegex = /(?:https?:\/\/|www\.)([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(?:\/[^\s]*)?/gi
   const urlLike = text.match(urlRegex) || []
   
   return urlLike
     .filter((match) => {
+      // Check if the match actually starts with https://, http://, or www.
+      const trimmedMatch = match.trim()
+      if (!trimmedMatch.startsWith('https://') && 
+          !trimmedMatch.startsWith('http://') && 
+          !trimmedMatch.startsWith('www.')) {
+        return false
+      }
+      
       const beforeMatch = text.substring(0, text.indexOf(match))
       const afterMatch = text.substring(text.indexOf(match) + match.length)
       
