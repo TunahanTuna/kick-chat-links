@@ -55,9 +55,9 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
   }
 
   return (
-    <div className="hidden md:block rounded-xl sm:rounded-2xl bg-white/90 p-3 sm:p-4 lg:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+    <div className="hidden md:block rounded-xl sm:rounded-2xl bg-theme-card p-3 sm:p-4 lg:p-6 shadow-theme-lg border border-theme-primary backdrop-blur-sm">
       <div className="mb-3 sm:mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Site Bazında Gruplandırılmış Linkler</h2>
+        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-theme-primary">Site Bazında Gruplandırılmış Linkler</h2>
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => {
@@ -68,7 +68,7 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
               })
               setExpandedGroups(newState)
             }}
-            className="rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-1 text-xs sm:text-sm hover:bg-gray-50 focus:border-emerald-500 focus:outline-none transition-colors"
+            className="rounded-lg border border-theme-secondary bg-theme-tertiary px-2 sm:px-3 py-1 text-xs sm:text-sm text-theme-primary hover:bg-theme-secondary focus:border-theme-accent focus:outline-none transition-colors"
             title={groupedLinks.every(group => expandedGroups[group.hostname]) ? "Tümünü Daralt" : "Tümünü Genişlet"}
           >
             {groupedLinks.every(group => expandedGroups[group.hostname]) ? (
@@ -90,12 +90,12 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
-            className="rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-1 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"
+            className="rounded-lg border border-theme-secondary bg-theme-tertiary px-2 sm:px-3 py-1 text-xs sm:text-sm text-theme-primary focus:border-theme-accent focus:outline-none"
           >
             <option value="recent">En Yeni</option>
             <option value="popular">En Popüler</option>
           </select>
-          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+          <div className="flex items-center gap-1 text-xs sm:text-sm text-theme-secondary">
             <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
@@ -108,16 +108,16 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
         {groupedLinks.map((group) => (
           <div
             key={group.hostname}
-            className="rounded-lg sm:rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white overflow-hidden"
+            className="rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-gradient-card overflow-hidden"
           >
             {/* Group Header */}
             <button
               onClick={() => toggleGroup(group.hostname)}
-              className="w-full bg-gradient-to-r from-emerald-500 to-cyan-600 px-3 sm:px-4 py-2.5 sm:py-3 transition-all hover:from-emerald-600 hover:to-cyan-700 focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 sm:focus:ring-offset-2"
+              className="w-full bg-gradient-theme-accent px-3 sm:px-4 py-2.5 sm:py-3 transition-all hover:bg-gradient-theme-accent-hover focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 sm:focus:ring-offset-2 focus:ring-offset-theme-background"
             >
               <div className="flex items-center justify-between min-w-0">
                 <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                  <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-md sm:rounded-lg bg-white/20 flex-shrink-0">
+                  <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-md sm:rounded-lg bg-theme-secondary flex-shrink-0">
                     <svg 
                       className={`h-3 w-3 sm:h-4 sm:w-4 text-white transition-transform duration-200 ${
                         expandedGroups[group.hostname] ? 'rotate-90' : ''
@@ -135,7 +135,7 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                  <div className="rounded-md sm:rounded-lg bg-white/20 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-bold text-white">
+                  <div className="rounded-md sm:rounded-lg bg-theme-secondary px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-bold text-white">
                     <span className="hidden xs:inline">Toplam: </span>×{group.totalCount}
                   </div>
                   <div className="text-xs text-white/80 hidden sm:block">
@@ -147,22 +147,22 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
 
             {/* Group Links */}
             {expandedGroups[group.hostname] && (
-              <div className="divide-y divide-gray-100 animate-fade-in">
+              <div className="divide-y divide-theme-primary animate-fade-in">
                 {group.links.map((link) => (
-                <div key={link.url} className="group px-3 sm:px-4 py-2.5 sm:py-3 transition-colors hover:bg-gray-50">
+                <div key={link.url} className="group px-3 sm:px-4 py-2.5 sm:py-3 transition-colors hover:bg-theme-secondary">
                   <div className="flex items-start justify-between gap-2 sm:gap-3">
                     <div className="min-w-0 flex-1">
                       <a
                         href={link.url}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="block text-xs sm:text-sm font-medium text-gray-900 hover:text-emerald-700 transition-colors truncate group-hover:underline mb-1.5 sm:mb-2"
+                        className="block text-xs sm:text-sm font-medium text-theme-primary hover:text-theme-accent transition-colors truncate group-hover:underline mb-1.5 sm:mb-2"
                         title={link.url}
                       >
                         {link.url.replace(/^https?:\/\//, '').replace(group.hostname, '')}
                       </a>
                       
-                      <div className="flex items-center gap-2 sm:gap-3 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 sm:gap-3 text-xs text-theme-muted">
                         <div className="flex items-center gap-1 min-w-0">
                           <svg className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -179,12 +179,12 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
                     </div>
                     
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                      <div className="rounded-md sm:rounded-lg bg-gray-200 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium text-gray-700">
+                      <div className="rounded-md sm:rounded-lg bg-theme-secondary px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium text-theme-primary">
                         ×{link.count}
                       </div>
                       <button
                         onClick={() => navigator.clipboard?.writeText(link.url)}
-                        className="opacity-0 group-hover:opacity-100 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md sm:rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-gray-200"
+                        className="opacity-0 group-hover:opacity-100 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md sm:rounded-lg bg-theme-secondary text-theme-primary transition-all hover:bg-theme-tertiary hover:text-theme-accent"
                         title="Linki kopyala"
                       >
                         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

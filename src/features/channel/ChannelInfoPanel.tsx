@@ -12,12 +12,12 @@ export function ChannelInfoPanel({ channel, username }: ChannelInfoPanelProps) {
   const followersCount = (channel as any)?.followers_count || 0
   
   return (
-    <div className="w-full min-w-[350px] md:min-w-[600px] xl:min-w-[1050px] rounded-lg sm:rounded-2xl bg-white/90 p-3 sm:p-4 lg:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+    <div className="w-full min-w-[350px] md:min-w-[600px] xl:min-w-[1050px] rounded-lg sm:rounded-2xl bg-theme-card p-3 sm:p-4 lg:p-6 shadow-theme-lg border border-theme-primary backdrop-blur-sm">
       <div className="mb-2 sm:mb-3 lg:mb-4 xl:mb-6 flex flex-col gap-1.5 sm:gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Kanal Bilgileri</h2>
+        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-theme-primary">Kanal Bilgileri</h2>
         <div className="flex items-center gap-2">
           <span className={`status-indicator ${isOnline ? 'status-online' : 'status-offline'}`}></span>
-          <span className={`text-xs sm:text-sm font-medium ${isOnline ? 'text-emerald-700' : 'text-gray-500'}`}>
+          <span className={`text-xs sm:text-sm font-medium ${isOnline ? 'text-theme-accent' : 'text-theme-muted'}`}>
             {isOnline ? 'Canlı Yayında' : 'Çevrimdışı'}
           </span>
         </div>
@@ -64,8 +64,8 @@ export function ChannelInfoPanel({ channel, username }: ChannelInfoPanelProps) {
       </div>
       
       {followersCount > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="mt-4 pt-4 border-t border-theme-secondary">
+          <div className="flex items-center gap-2 text-sm text-theme-secondary">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>

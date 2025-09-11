@@ -1,4 +1,4 @@
-import { LoadingSkeleton, WelcomeScreen } from './shared/components'
+import { LoadingSkeleton, WelcomeScreen, ThemeToggle } from './shared/components'
 import { useChannel, useChatAndLinks } from './shared/hooks'
 import { ChannelInfoPanel } from './features/channel'
 import { ChatPanel } from './features/chat'
@@ -25,8 +25,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900 flex flex-col">
-      <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
+    <div className="min-h-screen bg-theme-gradient text-theme-primary flex flex-col">
+      <header className="sticky top-0 z-50 glassmorphism border-b border-theme-primary">
         <div className="mx-auto max-w-full xl:max-w-[1400px] 2xl:max-w-[1600px] px-4 sm:px-6 lg:px-8 xl:px-12 py-2 sm:py-3 lg:py-4">
           <div className="flex flex-col gap-2 sm:gap-3 lg:gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center justify-between">
@@ -38,24 +38,24 @@ export default function App() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h1 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold gradient-text truncate">Kick Chat Analytics</h1>
-                  <p className="text-xs sm:text-sm text-emerald-700/80 hidden sm:block lg:inline">Gerçek zamanlı chat izleme ve link analizi</p>
+                  <p className="text-xs sm:text-sm text-theme-accent hidden sm:block lg:inline">Gerçek zamanlı chat izleme ve link analizi</p>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center lg:w-auto">
               <form
-                className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-emerald-200/50 bg-white/90 px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-theme-primary bg-theme-card px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-theme-lg backdrop-blur-sm transition-all hover:shadow-theme-xl"
                 onSubmit={(e) => {
                   e.preventDefault()
                   void fetchChannel()
                 }}
               >
-                <svg className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-theme-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
-                  className="flex-1 bg-transparent text-xs sm:text-sm outline-none placeholder:text-gray-400 min-w-0"
+                  className="flex-1 bg-transparent text-xs sm:text-sm outline-none placeholder:text-theme-muted min-w-0 text-theme-primary"
                   placeholder="Kullanıcı adı..."
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -64,7 +64,7 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={!username.trim() || isLoading}
-                  className="inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
+                  className="inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-theme-accent to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-theme-md transition-all hover:shadow-theme-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
                 >
                   {isLoading ? (
                     <>
@@ -83,8 +83,8 @@ export default function App() {
               
               {/* Connection Toggle Switch */}
               {hasEverConnected && (
-                <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 rounded-lg sm:rounded-xl bg-white/90 px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-lg backdrop-blur-sm border border-emerald-200/50">
-                  <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:inline">Bağlantı:</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 rounded-lg sm:rounded-xl bg-theme-card px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-theme-lg backdrop-blur-sm border border-theme-primary">
+                  <span className="text-xs sm:text-sm font-medium text-theme-secondary hidden md:inline">Bağlantı:</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -96,8 +96,8 @@ export default function App() {
                     }}
                     className={`relative inline-flex h-4 w-7 sm:h-5 sm:w-9 lg:h-6 lg:w-11 items-center rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-offset-1 ${
                       channel 
-                        ? 'bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 hover:shadow-xl focus:ring-emerald-500' 
-                        : 'bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 hover:shadow-xl focus:ring-gray-400'
+                        ? 'bg-gradient-to-r from-theme-accent to-cyan-600 hover:shadow-theme-xl focus:ring-theme-accent' 
+                        : 'bg-gradient-to-r from-theme-muted to-theme-tertiary hover:shadow-theme-xl focus:ring-theme-muted'
                     }`}
                     title={channel ? "Bağlantıyı kes" : "Tekrar bağlan"}
                   >
@@ -105,11 +105,11 @@ export default function App() {
                       channel ? 'translate-x-3.5 sm:translate-x-5 lg:translate-x-6' : 'translate-x-0.5 sm:translate-x-1'
                     }`}>
                       {channel ? (
-                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-theme-accent absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-gray-500 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-theme-muted absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       )}
@@ -117,13 +117,16 @@ export default function App() {
                   </button>
                   <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap ${
                     channel 
-                      ? 'text-emerald-700 bg-emerald-50' 
-                      : 'text-gray-600 bg-gray-100'
+                      ? 'text-theme-accent bg-theme-secondary' 
+                      : 'text-theme-muted bg-theme-secondary'
                   }`}>
                     {channel ? 'Aktif' : 'Kapalı'}
                   </span>
                 </div>
               )}
+              
+              {/* Theme Toggle */}
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -132,7 +135,7 @@ export default function App() {
       <main className="mx-auto max-w-full xl:max-w-[1400px] 2xl:max-w-[1600px] safe-area-inset px-4 sm:px-6 lg:px-8 xl:px-12 py-2 sm:py-4 lg:py-6 xl:py-8 flex-1">
         {/* Error Message */}
         {errorMessage && (
-          <div className="animate-fade-in mb-2 sm:mb-4 lg:mb-6 rounded-lg sm:rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-2 sm:p-3 lg:p-4 shadow-md">
+          <div className="animate-fade-in mb-2 sm:mb-4 lg:mb-6 rounded-lg sm:rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-2 sm:p-3 lg:p-4 shadow-theme-md">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="flex h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 items-center justify-center rounded-full bg-red-100 flex-shrink-0">
                 <svg className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-4 lg:w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -182,7 +185,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-emerald-200/50 bg-gradient-to-r from-emerald-50/80 to-cyan-50/80 backdrop-blur-sm mt-auto">
+      <footer className="border-t border-theme-primary bg-theme-secondary backdrop-blur-sm mt-auto">
         <div className="mx-auto max-w-full xl:max-w-[1400px] 2xl:max-w-[1600px] px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8">
           <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 lg:gap-4 text-center">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -193,18 +196,18 @@ export default function App() {
               </div>
               <div className="text-left">
                 <h3 className="text-sm sm:text-base lg:text-lg font-bold gradient-text">Kick Chat Analytics</h3>
-                <p className="text-xs sm:text-sm text-emerald-700/80 hidden sm:block">Gerçek zamanlı chat izleme aracı</p>
+                <p className="text-xs sm:text-sm text-theme-accent hidden sm:block">Gerçek zamanlı chat izleme aracı</p>
               </div>
             </div>
             
             <div className="flex flex-col items-center gap-1.5 sm:gap-2">
-              <div className="flex flex-col xs:flex-row items-center gap-1 xs:gap-2 text-xs sm:text-sm text-gray-600">
+              <div className="flex flex-col xs:flex-row items-center gap-1 xs:gap-2 text-xs sm:text-sm text-theme-secondary">
                 <span>© {new Date().getFullYear()} Created with ❤️ by</span>
                 <a
                   href="https://x.com/JausWolf"
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="inline-flex items-center gap-1 font-semibold text-emerald-700 transition-all hover:text-emerald-800 hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-theme-accent transition-all hover:text-theme-accent-hover hover:underline"
                 >
                   <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -213,7 +216,7 @@ export default function App() {
                 </a>
               </div>
               
-              <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 lg:gap-4 text-xs text-gray-500">
+              <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 lg:gap-4 text-xs text-theme-muted">
                 <span className="flex items-center gap-1 whitespace-nowrap">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -235,7 +238,7 @@ export default function App() {
                 </span>
               </div>
               
-              <div className="mt-1 text-xs text-gray-400">
+              <div className="mt-1 text-xs text-theme-muted">
                 Made for the Kick.com streaming community
               </div>
             </div>
