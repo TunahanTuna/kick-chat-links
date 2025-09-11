@@ -6,11 +6,20 @@ import type { Channel as PusherChannel } from 'pusher-js'
 type KickChannel = Record<string, unknown>
 
 export default function App() {
-  const [username, setUsername] = useState<string>('xqc')
+  const [username, setUsername] = useState<string>('')
   const [channel, setChannel] = useState<KickChannel | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [messages, setMessages] = useState<Array<{ id: string; username: string; message: string; createdAt?: string }>>([])
+
+  type LinkStat = {
+    url: string
+    hostname: string
+    count: number
+    lastAt: string
+    lastSender: string
+  }
+  const [linkMap, setLinkMap] = useState<Record<string, LinkStat>>({})
 
   const pusherRef = useRef<Pusher | null>(null)
   const subscriptionRef = useRef<PusherChannel | null>(null)
@@ -25,6 +34,8 @@ export default function App() {
     setIsLoading(true)
     setErrorMessage(null)
     setChannel(null)
+    setMessages([])
+    setLinkMap({})
     try {
       const response = await fetch(endpoint, { signal })
       if (!response.ok) {
@@ -98,6 +109,37 @@ export default function App() {
 
         if (!content) return
         setMessages((prev) => [...prev, { id: messageId, username: userName, message: content, createdAt }])
+
+        // Link çıkarımı ve gruplama
+        const urls = extractUrls(content)
+        if (urls.length > 0) {
+          setLinkMap((prev) => {
+            const next = { ...prev }
+            for (const rawUrl of urls) {
+              const normalized = normalizeUrl(rawUrl)
+              if (!normalized) continue
+              const hostname = safeHostname(normalized)
+              const exist = next[normalized]
+              if (exist) {
+                next[normalized] = {
+                  ...exist,
+                  count: exist.count + 1,
+                  lastAt: createdAt || new Date().toISOString(),
+                  lastSender: userName,
+                }
+              } else {
+                next[normalized] = {
+                  url: normalized,
+                  hostname,
+                  count: 1,
+                  lastAt: createdAt || new Date().toISOString(),
+                  lastSender: userName,
+                }
+              }
+            }
+            return next
+          })
+        }
       }
       sub.bind('App\\Events\\ChatMessageEvent', handler)
 
@@ -113,8 +155,8 @@ export default function App() {
   return (
     <div className="min-h-dvh bg-gray-50 text-gray-900">
       <div className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-2xl font-semibold">Kick Channel Arama</h1>
-        <p className="mt-1 text-sm text-gray-600">https://kick.com/api/v1/channels/{'{username}'} üzerinden yayıncı bilgisi çekme</p>
+        <h1 className="text-2xl font-semibold">Kick Link Dashboard</h1>
+        <p className="mt-1 text-sm text-gray-600">Chatte paylaşılan linkleri benzersiz olarak topla ve sırala.</p>
 
         <form
           className="mt-6 flex flex-col gap-3 sm:flex-row"
@@ -125,7 +167,7 @@ export default function App() {
         >
           <input
             className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base outline-none ring-2 ring-transparent transition focus:border-gray-400 focus:ring-emerald-200"
-            placeholder="kullanıcı adı örn: xqc"
+            placeholder="yayıncı kullanıcı adı"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             spellCheck={false}
@@ -135,7 +177,7 @@ export default function App() {
             disabled={!username.trim() || isLoading}
             className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoading ? 'Yükleniyor…' : 'Getir'}
+            {isLoading ? 'Yükleniyor…' : 'Bağlan'}
           </button>
         </form>
 
@@ -151,13 +193,13 @@ export default function App() {
               <h2 className="mb-2 text-lg font-medium">Özet</h2>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <InfoRow label="Username" value={String((channel as any)?.slug ?? username)} />
-                <InfoRow label="Başlık" value={String((channel as any)?.livestream?.session_title ?? '-')}
-                />
-                <InfoRow label="Kategori" value={String((channel as any)?.livestream?.category?.name ?? '-')}
-                />
+                <InfoRow label="Başlık" value={String((channel as any)?.livestream?.session_title ?? '-')} />
+                <InfoRow label="Kategori" value={String((channel as any)?.livestream?.category?.name ?? '-')} />
                 <InfoRow label="Online?" value={((channel as any)?.livestream ? 'Evet' : 'Hayır')} />
               </div>
             </div>
+
+            <LinksPanel linkMap={linkMap} />
 
             <div className="rounded-md border border-gray-200 bg-white p-4">
               <h2 className="mb-2 text-lg font-medium">Canlı Chat</h2>
@@ -198,6 +240,84 @@ function InfoRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-start gap-3">
       <div className="w-28 shrink-0 text-sm font-medium text-gray-600">{label}</div>
       <div className="text-sm text-gray-900">{value}</div>
+    </div>
+  )
+}
+
+// Helpers: URL çıkarımı ve normalizasyon
+function extractUrls(text: string): string[] {
+  if (!text) return []
+  const urlLike = text.match(/((https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?)/gi) || []
+  // Mentions/emails vs gerçek domain ayırımı için basit filtre
+  return urlLike
+    .map((u) => (u.startsWith('http') ? u : `https://${u}`))
+    .filter((u) => {
+      try { const test = new URL(u); return !!test.hostname && test.hostname.includes('.') } catch { return false }
+    })
+}
+
+function normalizeUrl(raw: string): string | null {
+  try {
+    const u = new URL(raw)
+    u.hash = ''
+    // normalize common trackers
+    const params = new URLSearchParams(u.search)
+    ;['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid'].forEach((k) => params.delete(k))
+    u.search = params.toString() ? `?${params.toString()}` : ''
+    // lowercase hostname, remove default ports, trim trailing slash
+    u.hostname = u.hostname.toLowerCase()
+    if ((u.protocol === 'http:' && u.port === '80') || (u.protocol === 'https:' && u.port === '443')) {
+      u.port = ''
+    }
+    if (u.pathname !== '/' && u.pathname.endsWith('/')) {
+      u.pathname = u.pathname.slice(0, -1)
+    }
+    return u.toString()
+  } catch {
+    return null
+  }
+}
+
+function safeHostname(url: string): string {
+  try { return new URL(url).hostname } catch { return url }
+}
+
+function formatTimeAgo(iso?: string): string {
+  if (!iso) return ''
+  const then = new Date(iso).getTime()
+  const now = Date.now()
+  const diff = Math.max(0, Math.floor((now - then) / 1000))
+  if (diff < 60) return `${diff}s`
+  if (diff < 3600) return `${Math.floor(diff / 60)}m`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}s`
+  return `${Math.floor(diff / 86400)}g`
+}
+
+function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostname: string; count: number; lastAt: string; lastSender: string }> }) {
+  const links = Object.values(linkMap)
+    .sort((a, b) => new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime())
+  return (
+    <div className="rounded-md border border-gray-200 bg-white p-4">
+      <h2 className="mb-2 text-lg font-medium">Son Linkler</h2>
+      {links.length === 0 ? (
+        <p className="text-sm text-gray-600">Henüz link yakalanmadı.</p>
+      ) : (
+        <ul className="divide-y divide-gray-100">
+          {links.map((l) => (
+            <li key={l.url} className="flex items-center justify-between gap-3 py-2">
+              <div className="min-w-0">
+                <div className="truncate text-sm font-medium text-gray-900">
+                  <a className="hover:underline" href={l.url} target="_blank" rel="noreferrer noopener">{l.url}</a>
+                </div>
+                <div className="mt-0.5 text-xs text-gray-500">
+                  {l.hostname} · {l.lastSender} · {formatTimeAgo(l.lastAt)} önce
+                </div>
+              </div>
+              <div className="shrink-0 rounded bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">×{l.count}</div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
