@@ -54,7 +54,7 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
           {links.map((link) => (
             <div
               key={link.url}
-              className="group rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-gradient-card p-2.5 sm:p-3 lg:p-4 transition-all hover:border-theme-accent hover:shadow-theme-md"
+              className="group rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-secondary hover:bg-theme-tertiary p-2.5 sm:p-3 lg:p-4 transition-all hover:border-theme-accent"
             >
               <div className="flex items-start justify-between gap-2 sm:gap-3">
                 <div className="min-w-0 flex-1">
@@ -96,7 +96,7 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <div className="rounded-lg bg-gradient-to-r from-theme-accent to-cyan-600 px-3 py-1 text-xs font-bold text-white shadow-theme-sm">
+                  <div className="rounded-md sm:rounded-lg bg-theme-tertiary px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-bold text-theme-accent">
                     ×{link.count}
                   </div>
                   <button

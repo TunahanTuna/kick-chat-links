@@ -113,13 +113,13 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
             {/* Group Header */}
             <button
               onClick={() => toggleGroup(group.hostname)}
-              className="w-full bg-gradient-group-header px-3 sm:px-4 py-2.5 sm:py-3 transition-all hover:bg-gradient-group-header-hover focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 sm:focus:ring-offset-2 focus:ring-offset-theme-background"
+              className="w-full bg-theme-secondary hover:bg-theme-tertiary px-3 sm:px-4 py-2.5 sm:py-3 transition-all focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-theme-accent focus:ring-offset-1 sm:focus:ring-offset-2 focus:ring-offset-theme-background"
             >
               <div className="flex items-center justify-between min-w-0">
                 <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                  <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-md sm:rounded-lg bg-white/20 flex-shrink-0">
+                  <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-md sm:rounded-lg bg-theme-tertiary flex-shrink-0">
                     <svg 
-                      className={`h-3 w-3 sm:h-4 sm:w-4 text-white transition-transform duration-200 ${
+                      className={`h-3 w-3 sm:h-4 sm:w-4 text-theme-accent transition-transform duration-200 ${
                         expandedGroups[group.hostname] ? 'rotate-90' : ''
                       }`} 
                       fill="none" 
@@ -130,15 +130,15 @@ export function GroupedLinksPanel({ linkMap }: GroupedLinksPanelProps) {
                     </svg>
                   </div>
                   <div className="text-left min-w-0 flex-1">
-                    <h3 className="text-sm sm:text-base font-semibold text-white truncate">{group.hostname}</h3>
-                    <p className="text-xs text-white/80">{group.links.length} farklı link</p>
+                    <h3 className="text-sm sm:text-base font-semibold text-theme-primary truncate">{group.hostname}</h3>
+                    <p className="text-xs text-theme-secondary">{group.links.length} farklı link</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                  <div className="rounded-md sm:rounded-lg bg-white/20 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-bold text-white">
+                  <div className="rounded-md sm:rounded-lg bg-theme-tertiary px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-bold text-theme-accent">
                     <span className="hidden xs:inline">Toplam: </span>×{group.totalCount}
                   </div>
-                  <div className="text-xs text-white/80 hidden sm:block">
+                  <div className="text-xs text-theme-secondary hidden sm:block">
                     {formatTimeAgo(new Date(group.lastActivity).toISOString())} önce
                   </div>
                 </div>

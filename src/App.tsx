@@ -64,7 +64,7 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={!username.trim() || isLoading}
-                  className="inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-theme-accent to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-theme-md transition-all hover:shadow-theme-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
+                  className="inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-theme-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-theme-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
                 >
                   {isLoading ? (
                     <>
@@ -96,8 +96,8 @@ export default function App() {
                     }}
                     className={`relative inline-flex h-4 w-7 sm:h-5 sm:w-9 lg:h-6 lg:w-11 items-center rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-offset-1 ${
                       channel 
-                        ? 'bg-gradient-to-r from-theme-accent to-cyan-600 hover:shadow-theme-xl focus:ring-theme-accent' 
-                        : 'bg-gradient-to-r from-theme-muted to-theme-tertiary hover:shadow-theme-xl focus:ring-theme-muted'
+                        ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 hover:shadow-theme-xl focus:ring-emerald-500' 
+                        : 'bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 hover:shadow-theme-xl focus:ring-gray-400'
                     }`}
                     title={channel ? "Bağlantıyı kes" : "Tekrar bağlan"}
                   >
@@ -105,11 +105,11 @@ export default function App() {
                       channel ? 'translate-x-3.5 sm:translate-x-5 lg:translate-x-6' : 'translate-x-0.5 sm:translate-x-1'
                     }`}>
                       {channel ? (
-                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-theme-accent absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-theme-muted absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-3 lg:w-3 text-gray-500 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       )}

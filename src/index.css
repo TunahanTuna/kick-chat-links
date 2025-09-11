@@ -199,6 +199,11 @@ html {
   --tw-ring-offset-color: var(--bg-primary);
 }
 
+/* Badge background adjustments for light mode */
+.light .bg-theme-tertiary {
+  background: #bbf7d0;
+}
+
 .border-theme-primary {
   border-color: var(--border-primary);
 }
