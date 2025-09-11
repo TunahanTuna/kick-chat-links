@@ -175,7 +175,7 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900 flex flex-col">
       {/* Modern Header with Glass Effect */}
       <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
-        <div className="mx-auto max-w-7xl px-4 py-4">
+        <div className="mx-auto w-7xl px-4 py-4">
           <div className="flex flex-col items-start justify-between gap-4 xl:flex-row xl:items-center">
             {/* Brand Section */}
             <div className="flex items-center gap-3">
@@ -287,7 +287,7 @@ export default function App() {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-8 flex-1">
+      <main className="mx-auto w-7xl px-4 py-8 flex-1">
         {/* Error Message */}
         {errorMessage && (
           <div className="animate-fade-in mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 shadow-md">
