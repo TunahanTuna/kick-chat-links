@@ -173,38 +173,37 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900 flex flex-col">
-      {/* Modern Header with Glass Effect */}
-      <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
-        <div className="mx-auto w-7xl px-4 py-4">
-          <div className="flex flex-col items-start justify-between gap-4 xl:flex-row xl:items-center">
-            {/* Brand Section */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
-                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold gradient-text">Kick Chat Analytics</h1>
-                <p className="text-sm text-emerald-700/80">Gerçek zamanlı chat izleme ve link analizi</p>
+,      <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
+        <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+          <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
+,            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
+                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold gradient-text truncate">Kick Chat Analytics</h1>
+                  <p className="text-xs sm:text-sm text-emerald-700/80 hidden sm:block">Gerçek zamanlı chat izleme ve link analizi</p>
+                </div>
               </div>
             </div>
 
-            {/* Search Form and Controls */}
-            <div className="flex w-full items-center gap-4 xl:w-auto">
+,            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:w-auto">
               <form
-                className="flex w-full max-w-md items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl xl:w-auto"
+                className="flex items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl"
                 onSubmit={(e) => {
                   e.preventDefault()
                   void fetchChannel()
                 }}
               >
-                <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-4 w-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
-                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
-                  placeholder="Yayıncı kullanıcı adını girin..."
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 min-w-0"
+                  placeholder="Kullanıcı adı..."
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   spellCheck={false}
@@ -212,26 +211,27 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={!username.trim() || isLoading}
-                  className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
                 >
                   {isLoading ? (
                     <>
-                      <svg className="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <svg className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                       </svg>
-                      Bağlanıyor...
+                      <span className="hidden sm:inline">Bağlanıyor...</span>
+                      <span className="sm:hidden">...</span>
                     </>
                   ) : (
-                    'Bağlan'
+                    <span>Bağlan</span>
                   )}
                 </button>
               </form>
               
               {/* Connection Toggle Switch */}
               {hasEverConnected && (
-                <div className="flex items-center gap-3 rounded-xl bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm border border-emerald-200/50">
-                  <span className="text-sm font-medium text-gray-700">Bağlantı:</span>
+                <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-white/90 px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg backdrop-blur-sm border border-emerald-200/50">
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 hidden sm:inline">Bağlantı:</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -253,33 +253,33 @@ export default function App() {
                         void fetchChannel()
                       }
                     }}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                       channel 
                         ? 'bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 hover:shadow-xl focus:ring-emerald-500' 
                         : 'bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 hover:shadow-xl focus:ring-gray-400'
                     }`}
                     title={channel ? "Bağlantıyı kes" : "Tekrar bağlan"}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-                      channel ? 'translate-x-6' : 'translate-x-1'
+                    <span className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                      channel ? 'translate-x-5 sm:translate-x-6' : 'translate-x-1'
                     }`}>
                       {channel ? (
-                        <svg className="h-3 w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-2 w-2 sm:h-3 sm:w-3 text-emerald-600 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <svg className="h-3 w-3 text-gray-500 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-2 w-2 sm:h-3 sm:w-3 text-gray-500 absolute top-0.5 left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       )}
                     </span>
                   </button>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
                     channel 
                       ? 'text-emerald-700 bg-emerald-50' 
                       : 'text-gray-600 bg-gray-100'
                   }`}>
-                    {channel ? 'Aktif' : 'Bağlı Değil'}
+                    {channel ? 'Aktif' : 'Kapalı'}
                   </span>
                 </div>
               )}
@@ -287,19 +287,19 @@ export default function App() {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-7xl px-4 py-8 flex-1">
+      <main className="mx-auto max-w-7xl safe-area-inset px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8 flex-1">
         {/* Error Message */}
         {errorMessage && (
-          <div className="animate-fade-in mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 shadow-md">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
-                <svg className="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="animate-fade-in mb-4 sm:mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-3 sm:p-4 shadow-md">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-red-100 flex-shrink-0">
+                <svg className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div>
-                <h3 className="font-semibold text-red-800">Bir hata oluştu</h3>
-                <p className="text-sm text-red-700">{errorMessage}</p>
+              <div className="min-w-0">
+                <h3 className="text-sm sm:text-base font-semibold text-red-800">Bir hata oluştu</h3>
+                <p className="text-xs sm:text-sm text-red-700 break-words">{errorMessage}</p>
               </div>
             </div>
           </div>
@@ -307,19 +307,19 @@ export default function App() {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="animate-fade-in mb-6">
+          <div className="animate-fade-in mb-4 sm:mb-6">
             <LoadingSkeleton />
           </div>
         )}
 
         {/* Channel Information */}
         {channel && !errorMessage && (
-          <div className="animate-slide-up space-y-6">
+          <div className="animate-slide-up space-y-4 sm:space-y-6">
             {/* Channel Stats */}
             <ChannelInfoPanel channel={channel} username={username} />
 
             {/* Links and Chat Grid */}
-            <div className="grid gap-6 xl:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
               <LinksPanel linkMap={linkMap} />
               <ChatPanel messages={messages} />
             </div>
@@ -337,22 +337,22 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-emerald-200/50 bg-gradient-to-r from-emerald-50/80 to-cyan-50/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-8">
-          <div className="flex flex-col items-center justify-center gap-4 text-center">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
-                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6 py-6 sm:py-8">
+          <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 text-center">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
+                <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <div className="text-left">
-                <h3 className="text-lg font-bold gradient-text">Kick Chat Analytics</h3>
-                <p className="text-sm text-emerald-700/80">Gerçek zamanlı chat izleme aracı</p>
+                <h3 className="text-base sm:text-lg font-bold gradient-text">Kick Chat Analytics</h3>
+                <p className="text-xs sm:text-sm text-emerald-700/80 hidden sm:block">Gerçek zamanlı chat izleme aracı</p>
               </div>
             </div>
             
             <div className="flex flex-col items-center gap-2">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600">
                 <span>© {new Date().getFullYear()} Created with ❤️ by</span>
                 <a
                   href="https://x.com/JausWolf"
@@ -360,19 +360,20 @@ export default function App() {
                   rel="noreferrer noopener"
                   className="inline-flex items-center gap-1 font-semibold text-emerald-700 transition-all hover:text-emerald-800 hover:underline"
                 >
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                   JausWolf
                 </a>
               </div>
               
-              <div className="flex items-center gap-4 text-xs text-gray-500">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-gray-500">
                 <span className="flex items-center gap-1">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  Real-time chat monitoring
+                  <span className="hidden sm:inline">Real-time chat monitoring</span>
+                  <span className="sm:hidden">Real-time monitoring</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -401,42 +402,42 @@ export default function App() {
 
 function LoadingSkeleton() {
   return (
-    <div className="space-y-6">
-      <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
-        <div className="mb-4 h-6 w-32 animate-pulse bg-gray-200 rounded"></div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg">
+        <div className="mb-3 sm:mb-4 h-5 sm:h-6 w-24 sm:w-32 animate-pulse bg-gray-200 rounded"></div>
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="space-y-2">
-              <div className="h-4 w-20 animate-pulse bg-gray-200 rounded"></div>
-              <div className="h-5 w-full animate-pulse bg-gray-200 rounded"></div>
+              <div className="h-3 sm:h-4 w-16 sm:w-20 animate-pulse bg-gray-200 rounded"></div>
+              <div className="h-4 sm:h-5 w-full animate-pulse bg-gray-200 rounded"></div>
             </div>
           ))}
         </div>
       </div>
-      <div className="grid gap-6 xl:grid-cols-2">
-        <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
-          <div className="mb-4 h-6 w-24 animate-pulse bg-gray-200 rounded"></div>
-          <div className="space-y-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg">
+          <div className="mb-3 sm:mb-4 h-5 sm:h-6 w-20 sm:w-24 animate-pulse bg-gray-200 rounded"></div>
+          <div className="space-y-2 sm:space-y-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center justify-between">
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 animate-pulse bg-gray-200 rounded"></div>
-                  <div className="h-3 w-1/2 animate-pulse bg-gray-200 rounded"></div>
+                <div className="flex-1 space-y-1 sm:space-y-2">
+                  <div className="h-3 sm:h-4 w-3/4 animate-pulse bg-gray-200 rounded"></div>
+                  <div className="h-2 sm:h-3 w-1/2 animate-pulse bg-gray-200 rounded"></div>
                 </div>
-                <div className="h-6 w-8 animate-pulse bg-gray-200 rounded"></div>
+                <div className="h-5 sm:h-6 w-6 sm:w-8 animate-pulse bg-gray-200 rounded"></div>
               </div>
             ))}
           </div>
         </div>
-        <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
-          <div className="mb-4 h-6 w-24 animate-pulse bg-gray-200 rounded"></div>
-          <div className="space-y-3">
+        <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg">
+          <div className="mb-3 sm:mb-4 h-5 sm:h-6 w-20 sm:w-24 animate-pulse bg-gray-200 rounded"></div>
+          <div className="space-y-2 sm:space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="h-8 w-8 animate-pulse bg-gray-200 rounded-full"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 w-20 animate-pulse bg-gray-200 rounded"></div>
-                  <div className="h-4 w-full animate-pulse bg-gray-200 rounded"></div>
+              <div key={i} className="flex items-start gap-2 sm:gap-3">
+                <div className="h-6 w-6 sm:h-8 sm:w-8 animate-pulse bg-gray-200 rounded-full flex-shrink-0"></div>
+                <div className="flex-1 space-y-1 sm:space-y-2">
+                  <div className="h-2 sm:h-3 w-16 sm:w-20 animate-pulse bg-gray-200 rounded"></div>
+                  <div className="h-3 sm:h-4 w-full animate-pulse bg-gray-200 rounded"></div>
                 </div>
               </div>
             ))}
@@ -453,18 +454,18 @@ function ChannelInfoPanel({ channel, username }: { channel: KickChannel; usernam
   const followersCount = (channel as any)?.followers_count || 0
   
   return (
-    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Kanal Bilgileri</h2>
+    <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-4 sm:mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Kanal Bilgileri</h2>
         <div className="flex items-center gap-2">
           <span className={`status-indicator ${isOnline ? 'status-online' : 'status-offline'}`}></span>
-          <span className={`text-sm font-medium ${isOnline ? 'text-emerald-700' : 'text-gray-500'}`}>
+          <span className={`text-xs sm:text-sm font-medium ${isOnline ? 'text-emerald-700' : 'text-gray-500'}`}>
             {isOnline ? 'Canlı Yayında' : 'Çevrimdışı'}
           </span>
         </div>
       </div>
       
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Kullanıcı Adı"
           value={String((channel as any)?.slug ?? username)}
@@ -520,14 +521,14 @@ function ChannelInfoPanel({ channel, username }: { channel: KickChannel; usernam
 
 function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-cyan-50 p-4 border border-emerald-100/50">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm text-emerald-600">
+    <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-cyan-50 p-3 sm:p-4 border border-emerald-100/50">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-white shadow-sm text-emerald-600 flex-shrink-0">
           {icon}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{label}</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900 truncate" title={value}>{value}</p>
+          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide truncate">{label}</p>
+          <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm font-semibold text-gray-900 truncate" title={value}>{value}</p>
         </div>
       </div>
     </div>
@@ -545,36 +546,36 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
   }, [messages])
 
   return (
-    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Canlı Chat</h2>
+    <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-3 sm:mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Canlı Chat</h2>
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-sm text-gray-600">{messages.length} mesaj</span>
+          <span className="text-xs sm:text-sm text-gray-600">{messages.length} mesaj</span>
         </div>
       </div>
       
       {messages.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="mb-4 rounded-full bg-gray-100 p-3">
-            <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
+          <div className="mb-3 sm:mb-4 rounded-full bg-gray-100 p-2 sm:p-3">
+            <svg className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
-          <p className="text-sm text-gray-500">Mesajlar yüklenmeyi bekliyor...</p>
+          <p className="text-xs sm:text-sm text-gray-500">Mesajlar yüklenmeyi bekliyor...</p>
         </div>
       ) : (
         <div 
           ref={messagesContainerRef}
-          className="max-h-96 overflow-y-auto space-y-1 pr-2 scroll-smooth"
+          className="max-h-64 sm:max-h-80 lg:max-h-96 overflow-y-auto space-y-1 pr-1 sm:pr-2 scroll-smooth"
         >
           {messages.map((message) => (
-            <div key={message.id} className="message-bubble group px-3 py-2 transition-colors">
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 text-xs font-semibold text-white">
+            <div key={message.id} className="message-bubble group px-2 sm:px-3 py-1.5 sm:py-2 transition-colors">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 text-xs font-semibold text-white flex-shrink-0">
                   {message.username.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -600,33 +601,33 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
 
 function WelcomeScreen() {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-8 rounded-2xl bg-gradient-to-br from-emerald-100 to-cyan-100 p-8">
-        <svg className="mx-auto h-16 w-16 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="flex flex-col items-center justify-center py-8 sm:py-12 lg:py-16 text-center px-4">
+      <div className="mb-6 sm:mb-8 rounded-2xl bg-gradient-to-br from-emerald-100 to-cyan-100 p-6 sm:p-8">
+        <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
       </div>
-      <h2 className="mb-4 text-2xl font-bold gradient-text">Kick Chat Analytics'e Hoş Geldiniz</h2>
-      <p className="mb-8 max-w-md text-gray-600">
+      <h2 className="mb-3 sm:mb-4 text-xl sm:text-2xl lg:text-3xl font-bold gradient-text">Kick Chat Analytics'e Hoş Geldiniz</h2>
+      <p className="mb-6 sm:mb-8 max-w-sm sm:max-w-md lg:max-w-lg text-sm sm:text-base text-gray-600 leading-relaxed">
         Bir yayıncının kullanıcı adını girerek canlı chat mesajlarını izleyin ve paylaşılan linkleri analiz edin.
       </p>
-      <div className="rounded-xl bg-gradient-to-r from-emerald-50 to-cyan-50 p-6 border border-emerald-200/50">
-        <h3 className="mb-3 font-semibold text-gray-900">Özellikler:</h3>
-        <ul className="space-y-2 text-sm text-gray-600">
+      <div className="w-full max-w-md sm:max-w-lg rounded-xl bg-gradient-to-r from-emerald-50 to-cyan-50 p-4 sm:p-6 border border-emerald-200/50">
+        <h3 className="mb-3 text-sm sm:text-base font-semibold text-gray-900">Özellikler:</h3>
+        <ul className="space-y-2 text-xs sm:text-sm text-gray-600">
           <li className="flex items-center gap-2">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             Gerçek zamanlı chat izleme
           </li>
           <li className="flex items-center gap-2">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             Paylaşılan linkleri otomatik toplama
           </li>
           <li className="flex items-center gap-2">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             Kanal istatistikleri ve bilgileri
@@ -841,20 +842,20 @@ function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostna
     })
 
   return (
-    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Paylaşılan Linkler</h2>
-        <div className="flex items-center gap-2">
+    <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-3 sm:mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Paylaşılan Linkler</h2>
+        <div className="flex items-center gap-2 sm:gap-2">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm focus:border-emerald-500 focus:outline-none"
+            className="rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-1 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"
           >
             <option value="recent">En Yeni</option>
             <option value="popular">En Popüler</option>
           </select>
-          <div className="flex items-center gap-1 text-sm text-gray-600">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
             {links.length}
@@ -863,16 +864,16 @@ function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostna
       </div>
       
       {links.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="mb-4 rounded-full bg-gray-100 p-3">
-            <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
+          <div className="mb-3 sm:mb-4 rounded-full bg-gray-100 p-2 sm:p-3">
+            <svg className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
           </div>
-          <p className="text-sm text-gray-500">Henüz hiç link paylaşılmadı</p>
+          <p className="text-xs sm:text-sm text-gray-500">Henüz hiç link paylaşılmadı</p>
         </div>
       ) : (
-        <div className="max-h-96 overflow-y-auto space-y-3 pr-2">
+        <div className="max-h-64 sm:max-h-80 lg:max-h-96 overflow-y-auto space-y-2 sm:space-y-3 pr-1 sm:pr-2">
           {links.map((link) => (
             <div
               key={link.url}
@@ -989,10 +990,10 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
   }
 
   return (
-    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Site Bazında Gruplandırılmış Linkler</h2>
-        <div className="flex items-center gap-2">
+    <div className="rounded-2xl bg-white/90 p-4 sm:p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-3 sm:mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Site Bazında Gruplandırılmış Linkler</h2>
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => {
               const allExpanded = groupedLinks.every(group => expandedGroups[group.hostname])
@@ -1002,7 +1003,7 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
               })
               setExpandedGroups(newState)
             }}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm hover:bg-gray-50 focus:border-emerald-500 focus:outline-none transition-colors"
+            className="rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-1 text-xs sm:text-sm hover:bg-gray-50 focus:border-emerald-500 focus:outline-none transition-colors"
             title={groupedLinks.every(group => expandedGroups[group.hostname]) ? "Tümünü Daralt" : "Tümünü Genişlet"}
           >
             {groupedLinks.every(group => expandedGroups[group.hostname]) ? (
@@ -1010,27 +1011,27 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                 </svg>
-                Daralt
+                <span className="hidden sm:inline">Daralt</span>
               </div>
             ) : (
               <div className="flex items-center gap-1">
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-                Genişlet
+                <span className="hidden sm:inline">Genişlet</span>
               </div>
             )}
           </button>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm focus:border-emerald-500 focus:outline-none"
+            className="rounded-lg border border-gray-200 bg-white px-2 sm:px-3 py-1 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"
           >
             <option value="recent">En Yeni</option>
             <option value="popular">En Popüler</option>
           </select>
-          <div className="flex items-center gap-1 text-sm text-gray-600">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             {groupedLinks.length} site
@@ -1038,7 +1039,7 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
         </div>
       </div>
       
-      <div className="max-h-96 overflow-y-auto space-y-4 pr-2">
+      <div className="max-h-64 sm:max-h-80 lg:max-h-96 overflow-y-auto space-y-3 sm:space-y-4 pr-1 sm:pr-2">
         {groupedLinks.map((group) => (
           <div
             key={group.hostname}
