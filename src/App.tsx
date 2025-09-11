@@ -153,24 +153,38 @@ export default function App() {
   }, [channel])
 
   return (
-    <div className="min-h-dvh bg-gradient-to-b from-emerald-50 to-white text-gray-900">
-      <header className="sticky top-0 z-10 border-b border-emerald-100/60 bg-white/70 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-3">
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-xl font-semibold text-emerald-900">Kick Link Dashboard</h1>
-              <p className="mt-0.5 text-xs text-emerald-700/80">Chatte paylaşılan linkleri benzersiz olarak topla ve sırala</p>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900">
+      {/* Modern Header with Glass Effect */}
+      <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
+        <div className="mx-auto max-w-7xl px-4 py-4">
+          <div className="flex flex-col items-start justify-between gap-4 xl:flex-row xl:items-center">
+            {/* Brand Section */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
+                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold gradient-text">Kick Chat Analytics</h1>
+                <p className="text-sm text-emerald-700/80">Gerçek zamanlı chat izleme ve link analizi</p>
+              </div>
             </div>
+
+            {/* Search Form */}
             <form
-              className="flex w-full max-w-md items-center gap-2 rounded-lg border border-emerald-200 bg-white px-2 py-1.5 shadow-sm sm:w-auto"
+              className="flex w-full max-w-md items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl xl:w-auto"
               onSubmit={(e) => {
                 e.preventDefault()
                 void fetchChannel()
               }}
             >
+              <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
               <input
-                className="w-full rounded-md px-2 py-1.5 text-sm outline-none placeholder:text-gray-400"
-                placeholder="yayıncı kullanıcı adı"
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+                placeholder="Yayıncı kullanıcı adını girin..."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 spellCheck={false}
@@ -178,77 +192,338 @@ export default function App() {
               <button
                 type="submit"
                 disabled={!username.trim() || isLoading}
-                className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isLoading ? 'Yükleniyor…' : 'Bağlan'}
+                {isLoading ? (
+                  <>
+                    <svg className="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Bağlanıyor...
+                  </>
+                ) : (
+                  'Bağlan'
+                )}
               </button>
             </form>
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-6xl px-4 py-6">
-
-        {/* eski inline form kaldırıldı; header'da arama çubuğu var */}
-
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        {/* Error Message */}
         {errorMessage && (
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-700">
-            Hata: {errorMessage}
-          </div>
-        )}
-
-        {channel && !errorMessage && (
-          <div className="mt-6 grid gap-4">
-            <div className="rounded-md border border-gray-200 bg-white p-4">
-              <h2 className="mb-2 text-lg font-medium">Özet</h2>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <InfoRow label="Username" value={String((channel as any)?.slug ?? username)} />
-                <InfoRow label="Başlık" value={String((channel as any)?.livestream?.session_title ?? '-')} />
-                <InfoRow label="Kategori" value={String((channel as any)?.livestream?.category?.name ?? '-')} />
-                <InfoRow label="Online?" value={((channel as any)?.livestream ? 'Evet' : 'Hayır')} />
+          <div className="animate-fade-in mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
+                <svg className="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-red-800">Bir hata oluştu</h3>
+                <p className="text-sm text-red-700">{errorMessage}</p>
               </div>
             </div>
-
-            <LinksPanel linkMap={linkMap} />
-
-            <div className="rounded-md border border-gray-200 bg-white p-4">
-              <h2 className="mb-2 text-lg font-medium">Canlı Chat</h2>
-              {messages.length === 0 ? (
-                <p className="text-sm text-gray-600">Mesaj bekleniyor…</p>
-              ) : (
-                <ul className="max-h-[50vh] space-y-2 overflow-auto">
-                  {messages.map((m) => (
-                    <li key={m.id} className="text-sm">
-                      <span className="font-medium text-emerald-700">{m.username}</span>
-                      <span className="text-gray-400">: </span>
-                      <span className="text-gray-900 break-words">{m.message}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="rounded-md border border-gray-200 bg-white p-4">
-              <h2 className="mb-2 text-lg font-medium">Ham JSON</h2>
-              <pre className="max-h-[50vh] overflow-auto rounded bg-gray-900 p-3 text-xs text-emerald-100">
-{JSON.stringify(channel, null, 2)}
-              </pre>
-            </div>
           </div>
         )}
 
-        {!channel && !isLoading && !errorMessage && (
-          <p className="mt-6 text-sm text-gray-600">Sonuçları görmek için bir kullanıcı adı girip "Getir"e basın.</p>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="animate-fade-in mb-6">
+            <LoadingSkeleton />
+          </div>
         )}
+
+        {/* Channel Information */}
+        {channel && !errorMessage && (
+          <div className="animate-slide-up space-y-6">
+            {/* Channel Stats */}
+            <ChannelInfoPanel channel={channel} username={username} />
+
+            {/* Links and Chat Grid */}
+            <div className="grid gap-6 xl:grid-cols-2">
+              <LinksPanel linkMap={linkMap} />
+              <ChatPanel messages={messages} />
+            </div>
+
+            {/* Raw JSON - Collapsible */}
+            <RawDataPanel channel={channel} />
+          </div>
+        )}
+
+        {/* Welcome State */}
+        {!channel && !isLoading && !errorMessage && (
+          <WelcomeScreen />
+        )}
+      </main>
+    </div>
+  )
+}
+
+// Loading Skeleton Component
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
+        <div className="mb-4 h-6 w-32 animate-pulse bg-gray-200 rounded"></div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="space-y-2">
+              <div className="h-4 w-20 animate-pulse bg-gray-200 rounded"></div>
+              <div className="h-5 w-full animate-pulse bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
+          <div className="mb-4 h-6 w-24 animate-pulse bg-gray-200 rounded"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-3/4 animate-pulse bg-gray-200 rounded"></div>
+                  <div className="h-3 w-1/2 animate-pulse bg-gray-200 rounded"></div>
+                </div>
+                <div className="h-6 w-8 animate-pulse bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
+          <div className="mb-4 h-6 w-24 animate-pulse bg-gray-200 rounded"></div>
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="h-8 w-8 animate-pulse bg-gray-200 rounded-full"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-20 animate-pulse bg-gray-200 rounded"></div>
+                  <div className="h-4 w-full animate-pulse bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+// Channel Info Panel Component
+function ChannelInfoPanel({ channel, username }: { channel: KickChannel; username: string }) {
+  const isOnline = !!(channel as any)?.livestream
+  const viewerCount = (channel as any)?.livestream?.viewer_count || 0
+  const followersCount = (channel as any)?.followers_count || 0
+  
   return (
-    <div className="flex items-start gap-3">
-      <div className="w-28 shrink-0 text-sm font-medium text-gray-600">{label}</div>
-      <div className="text-sm text-gray-900">{value}</div>
+    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Kanal Bilgileri</h2>
+        <div className="flex items-center gap-2">
+          <span className={`status-indicator ${isOnline ? 'status-online' : 'status-offline'}`}></span>
+          <span className={`text-sm font-medium ${isOnline ? 'text-emerald-700' : 'text-gray-500'}`}>
+            {isOnline ? 'Canlı Yayında' : 'Çevrimdışı'}
+          </span>
+        </div>
+      </div>
+      
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Kullanıcı Adı"
+          value={String((channel as any)?.slug ?? username)}
+          icon={
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          }
+        />
+        <StatCard
+          label="Yayın Başlığı"
+          value={String((channel as any)?.livestream?.session_title ?? 'Yayın Yok')}
+          icon={
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          }
+        />
+        <StatCard
+          label="Kategori"
+          value={String((channel as any)?.livestream?.category?.name ?? 'Belirtilmemiş')}
+          icon={
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          }
+        />
+        <StatCard
+          label="İzleyici Sayısı"
+          value={isOnline ? viewerCount.toLocaleString() : 'Çevrimdışı'}
+          icon={
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          }
+        />
+      </div>
+      
+      {followersCount > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span>{followersCount.toLocaleString()} takipçi</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Stat Card Component
+function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+  return (
+    <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-cyan-50 p-4 border border-emerald-100/50">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm text-emerald-600">
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{label}</p>
+          <p className="mt-1 text-sm font-semibold text-gray-900 truncate" title={value}>{value}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Chat Panel Component
+function ChatPanel({ messages }: { messages: Array<{ id: string; username: string; message: string; createdAt?: string }> }) {
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  return (
+    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Canlı Chat</h2>
+        <div className="flex items-center gap-2">
+          <span className="flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-sm text-gray-600">{messages.length} mesaj</span>
+        </div>
+      </div>
+      
+      {messages.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="mb-4 rounded-full bg-gray-100 p-3">
+            <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500">Mesajlar yüklenmeyi bekliyor...</p>
+        </div>
+      ) : (
+        <div className="max-h-96 overflow-y-auto space-y-1 pr-2">
+          {messages.map((message) => (
+            <div key={message.id} className="message-bubble group px-3 py-2 transition-colors">
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 text-xs font-semibold text-white">
+                  {message.username.slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-emerald-700">{message.username}</span>
+                    {message.createdAt && (
+                      <span className="text-xs text-gray-400">{formatTimeAgo(message.createdAt)}</span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-sm text-gray-900 break-words">{message.message}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Raw Data Panel Component
+function RawDataPanel({ channel }: { channel: KickChannel }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  
+  return (
+    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex w-full items-center justify-between text-left"
+      >
+        <h2 className="text-xl font-bold text-gray-900">Ham JSON Verisi</h2>
+        <svg
+          className={`h-5 w-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {isExpanded && (
+        <div className="mt-4 rounded-xl bg-gray-900 p-4">
+          <pre className="max-h-96 overflow-auto text-xs text-emerald-100">
+            {JSON.stringify(channel, null, 2)}
+          </pre>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Welcome Screen Component
+function WelcomeScreen() {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="mb-8 rounded-2xl bg-gradient-to-br from-emerald-100 to-cyan-100 p-8">
+        <svg className="mx-auto h-16 w-16 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </div>
+      <h2 className="mb-4 text-2xl font-bold gradient-text">Kick Chat Analytics'e Hoş Geldiniz</h2>
+      <p className="mb-8 max-w-md text-gray-600">
+        Bir yayıncının kullanıcı adını girerek canlı chat mesajlarını izleyin ve paylaşılan linkleri analiz edin.
+      </p>
+      <div className="rounded-xl bg-gradient-to-r from-emerald-50 to-cyan-50 p-6 border border-emerald-200/50">
+        <h3 className="mb-3 font-semibold text-gray-900">Özellikler:</h3>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li className="flex items-center gap-2">
+            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Gerçek zamanlı chat izleme
+          </li>
+          <li className="flex items-center gap-2">
+            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Paylaşılan linkleri otomatik toplama
+          </li>
+          <li className="flex items-center gap-2">
+            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Kanal istatistikleri ve bilgileri
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }
@@ -303,29 +578,111 @@ function formatTimeAgo(iso?: string): string {
 }
 
 function LinksPanel({ linkMap }: { linkMap: Record<string, { url: string; hostname: string; count: number; lastAt: string; lastSender: string }> }) {
+  const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
+  
   const links = Object.values(linkMap)
-    .sort((a, b) => new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime())
+    .sort((a, b) => {
+      if (sortBy === 'popular') {
+        return b.count - a.count || new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
+      }
+      return new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
+    })
+
   return (
-    <div className="rounded-md border border-gray-200 bg-white p-4">
-      <h2 className="mb-2 text-lg font-medium">Son Linkler</h2>
+    <div className="rounded-2xl bg-white/90 p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Paylaşılan Linkler</h2>
+        <div className="flex items-center gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="recent">En Yeni</option>
+            <option value="popular">En Popüler</option>
+          </select>
+          <div className="flex items-center gap-1 text-sm text-gray-600">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            {links.length}
+          </div>
+        </div>
+      </div>
+      
       {links.length === 0 ? (
-        <p className="text-sm text-gray-600">Henüz link yakalanmadı.</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="mb-4 rounded-full bg-gray-100 p-3">
+            <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500">Henüz hiç link paylaşılmadı</p>
+        </div>
       ) : (
-        <ul className="divide-y divide-gray-100">
-          {links.map((l) => (
-            <li key={l.url} className="flex items-center justify-between gap-3 py-2">
-              <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-gray-900">
-                  <a className="hover:underline" href={l.url} target="_blank" rel="noreferrer noopener">{l.url}</a>
+        <div className="max-h-96 overflow-y-auto space-y-3 pr-2">
+          {links.map((link) => (
+            <div
+              key={link.url}
+              className="group rounded-xl border border-gray-100 bg-gradient-to-r from-gray-50 to-white p-4 transition-all hover:border-emerald-200 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded bg-emerald-100">
+                      <svg className="h-3 w-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
+                      {link.hostname}
+                    </span>
+                  </div>
+                  
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="block text-sm font-medium text-gray-900 hover:text-emerald-700 transition-colors truncate group-hover:underline"
+                    title={link.url}
+                  >
+                    {link.url}
+                  </a>
+                  
+                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {link.lastSender}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatTimeAgo(link.lastAt)} önce
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-0.5 text-xs text-gray-500">
-                  {l.hostname} · {l.lastSender} · {formatTimeAgo(l.lastAt)} önce
+                
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                    ×{link.count}
+                  </div>
+                  <button
+                    onClick={() => navigator.clipboard?.writeText(link.url)}
+                    className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-gray-200"
+                    title="Linki kopyala"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
                 </div>
               </div>
-              <div className="shrink-0 rounded bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">×{l.count}</div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )
