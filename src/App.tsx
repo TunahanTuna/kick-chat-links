@@ -16,7 +16,7 @@ export default function App() {
   const [channel, setChannel] = useState<KickChannel | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [messages, setMessages] = useState<Array<{ id: string; username: string; message: string; createdAt?: string }>>([])
+  const [messages, setMessages] = useState<Array<{ id: string; username: string; message: string; createdAt?: string; emotes?: any[] }>>([])
   const [hasEverConnected, setHasEverConnected] = useState<boolean>(false)
 
   type LinkStat = {
@@ -119,9 +119,16 @@ export default function App() {
         const content = String(msg?.content ?? '')
         const userName = String(msg?.sender?.username ?? payload?.sender?.username ?? 'unknown')
         const createdAt = String(msg?.created_at ?? payload?.created_at ?? '')
+        const emotes = msg?.emotes || []
+
+        if (content && (emotes.length > 0 || content.includes('[emote:'))) {
+          console.log('Message payload:', msg)
+          console.log('Emotes found:', emotes)
+          console.log('Message content:', content)
+        }
 
         if (!content) return
-        setMessages((prev) => [...prev, { id: messageId, username: userName, message: content, createdAt }])
+        setMessages((prev) => [...prev, { id: messageId, username: userName, message: content, createdAt, emotes }])
 
         const urls = extractUrls(content)
         if (urls.length > 0) {
@@ -527,7 +534,7 @@ function StatCard({ label, value, icon }: { label: string; value: string; icon: 
   )
 }
 
-function ChatPanel({ messages }: { messages: Array<{ id: string; username: string; message: string; createdAt?: string }> }) {
+function ChatPanel({ messages }: { messages: Array<{ id: string; username: string; message: string; createdAt?: string; emotes?: any[] }> }) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   
@@ -577,7 +584,9 @@ function ChatPanel({ messages }: { messages: Array<{ id: string; username: strin
                       <span className="text-xs text-gray-400">{formatTimeAgo(message.createdAt)}</span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm text-gray-900 break-words">{message.message}</p>
+                  <div className="mt-1 text-sm text-gray-900 break-words">
+                    {parseMessageWithEmotes(message.message, message.emotes)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -708,6 +717,105 @@ function normalizeUrl(raw: string): string | null {
 
 function safeHostname(url: string): string {
   try { return new URL(url).hostname } catch { return url }
+}
+
+function parseMessageWithEmotes(content: string, emotes: any[] = []): React.ReactNode[] {
+  if (!emotes || emotes.length === 0) {
+    const emoteRegex = /\[emote:(\d+):([^\]]+)\]/g
+    const parts: React.ReactNode[] = []
+    let lastIndex = 0
+    let match
+
+    while ((match = emoteRegex.exec(content)) !== null) {
+      const [fullMatch, emoteId, emoteName] = match
+      const start = match.index
+      if (start > lastIndex) {
+        parts.push(content.slice(lastIndex, start))
+      }
+      const emoteUrl = `https://files.kick.com/emotes/${emoteId}/fullsize`
+      parts.push(
+        <img
+          key={`emote-${emoteId}-${start}`}
+          src={emoteUrl}
+          alt={emoteName}
+          title={emoteName}
+          className="inline-block h-6 w-auto mx-0.5 align-middle"
+          style={{ maxHeight: '24px' }}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement
+            target.style.display = 'none'
+            const span = document.createElement('span')
+            span.textContent = emoteName
+            span.className = 'text-purple-600 font-medium text-xs'
+            target.parentNode?.insertBefore(span, target.nextSibling)
+          }}
+        />
+      )
+
+      lastIndex = start + fullMatch.length
+    }
+
+    if (lastIndex < content.length) {
+      parts.push(content.slice(lastIndex))
+    }
+
+    return parts.length > 0 ? parts : [content]
+  }
+
+  const parts: React.ReactNode[] = []
+  let lastIndex = 0
+
+  const sortedEmotes = emotes
+    .filter(emote => emote && typeof emote.start === 'number' && typeof emote.end === 'number')
+    .sort((a, b) => a.start - b.start)
+
+  sortedEmotes.forEach((emote, index) => {
+    const { start, end, src, name, id } = emote
+
+    if (start > lastIndex) {
+      parts.push(content.slice(lastIndex, start))
+    }
+
+    let emoteUrl = src
+    if (!emoteUrl && id) {
+      emoteUrl = `https://files.kick.com/emotes/${id}/fullsize`
+    }
+
+    if (emoteUrl) {
+      parts.push(
+        <img
+          key={`emote-${index}-${start}`}
+          src={emoteUrl}
+          alt={name || 'emote'}
+          title={name || 'emote'}
+          className="inline-block h-6 w-auto mx-0.5 align-middle"
+          style={{ maxHeight: '24px' }}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement
+            target.style.display = 'none'
+            const span = document.createElement('span')
+            span.textContent = name || '[emote]'
+            span.className = 'text-purple-600 font-medium text-xs'
+            target.parentNode?.insertBefore(span, target.nextSibling)
+          }}
+        />
+      )
+    } else {
+      parts.push(
+        <span key={`emote-text-${index}-${start}`} className="text-purple-600 font-medium text-xs">
+          {name || '[emote]'}
+        </span>
+      )
+    }
+    
+    lastIndex = end + 1
+  })
+
+  if (lastIndex < content.length) {
+    parts.push(content.slice(lastIndex))
+  }
+
+  return parts
 }
 
 function formatTimeAgo(iso?: string): string {
@@ -870,7 +978,6 @@ function GroupedLinksPanel({ linkMap }: { linkMap: Record<string, { url: string;
       })
   }, [links, sortBy])
 
-  // İlk grup otomatik olarak açık olsun
   useEffect(() => {
     if (groupedLinks.length > 0 && Object.keys(expandedGroups).length === 0) {
       setExpandedGroups({ [groupedLinks[0].hostname]: true })
