@@ -1,5 +1,7 @@
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import Pusher from 'pusher-js'
+import type { Channel as PusherChannel } from 'pusher-js'
 
 type KickChannel = Record<string, unknown>
 
@@ -8,6 +10,10 @@ export default function App() {
   const [channel, setChannel] = useState<KickChannel | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [messages, setMessages] = useState<Array<{ id: string; username: string; message: string; createdAt?: string }>>([])
+
+  const pusherRef = useRef<Pusher | null>(null)
+  const subscriptionRef = useRef<PusherChannel | null>(null)
 
   const endpoint = useMemo(() => {
     if (!username.trim()) return null
@@ -41,6 +47,68 @@ export default function App() {
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Kick chat'e bağlan: chatroom id üzerinden Pusher subscribe
+  useEffect(() => {
+    // mevcut aboneliği temizle
+    if (subscriptionRef.current) {
+      try {
+        subscriptionRef.current.unbind_all()
+        const existingName = (subscriptionRef.current as any)?.name as string | undefined
+        if (existingName) pusherRef.current?.unsubscribe(existingName)
+      } catch {}
+    }
+    subscriptionRef.current = null
+
+    const chatroomId = Number((channel as any)?.chatroom?.id)
+    if (!channel || !chatroomId) {
+      return
+    }
+
+    try {
+      if (!pusherRef.current) {
+        pusherRef.current = new Pusher('32cbd69e4b950bf97679', {
+          cluster: 'us2',
+          forceTLS: true,
+          enabledTransports: ['ws', 'wss'],
+          disableStats: true,
+        })
+      }
+
+      const channelName = `chatrooms.${chatroomId}.v2`
+      const sub = pusherRef.current.subscribe(channelName)
+      subscriptionRef.current = sub
+
+      const handler = (raw: any) => {
+        let payload: any = raw
+        // Bazı durumlarda Pusher veriyi { data: "...json..." } veya direkt string döndürebilir
+        if (typeof payload === 'string') {
+          try { payload = JSON.parse(payload) } catch {}
+        }
+        if (payload && typeof payload.data === 'string') {
+          try { payload = JSON.parse(payload.data) } catch {}
+        }
+        // Kick bazı eventlerde mesajı payload.message altında da gönderebiliyor
+        const msg = payload?.message ?? payload
+
+        const messageId = String(msg?.id ?? (typeof crypto !== 'undefined' && (crypto as any).randomUUID?.()) ?? `${Date.now()}`)
+        const content = String(msg?.content ?? '')
+        const userName = String(msg?.sender?.username ?? payload?.sender?.username ?? 'unknown')
+        const createdAt = String(msg?.created_at ?? payload?.created_at ?? '')
+
+        if (!content) return
+        setMessages((prev) => [...prev, { id: messageId, username: userName, message: content, createdAt }])
+      }
+      sub.bind('App\\Events\\ChatMessageEvent', handler)
+
+      return () => {
+        sub.unbind('App\\Events\\ChatMessageEvent', handler)
+        pusherRef.current?.unsubscribe(channelName)
+      }
+    } catch (err) {
+      setErrorMessage((err as Error).message)
+    }
+  }, [channel])
 
   return (
     <div className="min-h-dvh bg-gray-50 text-gray-900">
@@ -89,6 +157,23 @@ export default function App() {
                 />
                 <InfoRow label="Online?" value={((channel as any)?.livestream ? 'Evet' : 'Hayır')} />
               </div>
+            </div>
+
+            <div className="rounded-md border border-gray-200 bg-white p-4">
+              <h2 className="mb-2 text-lg font-medium">Canlı Chat</h2>
+              {messages.length === 0 ? (
+                <p className="text-sm text-gray-600">Mesaj bekleniyor…</p>
+              ) : (
+                <ul className="max-h-[50vh] space-y-2 overflow-auto">
+                  {messages.map((m) => (
+                    <li key={m.id} className="text-sm">
+                      <span className="font-medium text-emerald-700">{m.username}</span>
+                      <span className="text-gray-400">: </span>
+                      <span className="text-gray-900 break-words">{m.message}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div className="rounded-md border border-gray-200 bg-white p-4">
