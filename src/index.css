@@ -49,7 +49,7 @@
   --bg-card: rgba(51, 65, 85, 0.9);
   --bg-hover: rgb(41, 52, 65);
   --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --bg-gradient-card: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  --bg-gradient-card: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
   
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
@@ -167,6 +167,32 @@ html {
 
 .hover\:bg-gradient-theme-accent-hover:hover {
   background: linear-gradient(to right, var(--text-accent-hover), var(--text-accent-secondary-hover));
+}
+
+/* Custom gradient for group headers - same as Paylaşılan Linkler */
+.light .bg-gradient-group-header {
+  background: linear-gradient(to right, var(--text-accent), var(--text-accent-secondary));
+}
+
+.light .hover\:bg-gradient-group-header-hover:hover {
+  background: linear-gradient(to right, var(--text-accent-hover), var(--text-accent-secondary-hover));
+}
+
+.dark .bg-gradient-group-header {
+  background: linear-gradient(to right, var(--text-accent), var(--text-accent-secondary));
+}
+
+.dark .hover\:bg-gradient-group-header-hover:hover {
+  background: linear-gradient(to right, var(--text-accent-hover), var(--text-accent-secondary-hover));
+}
+
+/* Group header text colors - always white for good contrast on gradient */
+.bg-gradient-group-header .text-white {
+  color: white !important;
+}
+
+.bg-gradient-group-header .text-white\/80 {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .focus\:ring-offset-theme-background:focus {
