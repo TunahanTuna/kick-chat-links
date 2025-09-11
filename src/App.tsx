@@ -173,10 +173,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-gray-900 flex flex-col">
-,      <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
+    <header className="sticky top-0 z-50 glassmorphism border-b border-emerald-200/50">
         <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
           <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
-,            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg">
                   <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,7 +190,7 @@ export default function App() {
               </div>
             </div>
 
-,            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:w-auto">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:w-auto">
               <form
                 className="flex items-center gap-2 rounded-xl border border-emerald-200/50 bg-white/90 px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl"
                 onSubmit={(e) => {
