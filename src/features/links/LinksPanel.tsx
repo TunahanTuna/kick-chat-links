@@ -36,7 +36,7 @@ export function LinksPanel({ linkMap, onRemoveLink, onClearAllLinks }: LinksPane
           {links.length > 0 && onClearAllLinks && (
             <button
               onClick={onClearAllLinks}
-              className="rounded-md sm:rounded-lg border border-red-500 bg-red-500/10 hover:bg-red-500/20 px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              className="animated-button button-hover-effect rounded-md sm:rounded-lg border border-red-500 bg-red-500/10 hover:bg-red-500/20 px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-red-500 hover:text-red-400 transition-smooth flex items-center gap-1"
               title="Tüm linkleri temizle"
             >
               <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,10 +66,11 @@ export function LinksPanel({ linkMap, onRemoveLink, onClearAllLinks }: LinksPane
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto space-y-1.5 sm:space-y-2 lg:space-y-3 pr-1 sm:pr-2">
-          {links.map((link) => (
+          {links.map((link, index) => (
             <div
               key={link.url}
-              className="group rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-secondary hover:bg-theme-tertiary p-2.5 sm:p-3 lg:p-4 transition-all hover:border-theme-accent"
+              className="group link-card animate-slide-in-bottom rounded-lg sm:rounded-xl border border-theme-secondary bg-theme-secondary hover:bg-theme-tertiary p-2.5 sm:p-3 lg:p-4 transition-smooth hover:border-theme-accent interactive-scale"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center justify-between gap-2 sm:gap-3">
                 <div className="min-w-0 flex-1">
@@ -120,14 +121,14 @@ export function LinksPanel({ linkMap, onRemoveLink, onClearAllLinks }: LinksPane
                       setCopiedUrl(link.url)
                       setTimeout(() => setCopiedUrl(null), 2000)
                     }}
-                    className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-theme-secondary text-theme-secondary transition-all hover:bg-theme-tertiary cursor-pointer relative"
+                    className="opacity-0 group-hover:opacity-100 animated-button flex h-8 w-8 items-center justify-center rounded-lg bg-theme-secondary text-theme-secondary transition-smooth hover:bg-theme-tertiary cursor-pointer relative"
                     title="Linki kopyala"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                     {copiedUrl === link.url && (
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-theme-primary text-theme-card px-2 py-1 rounded text-xs whitespace-nowrap z-10 animate-fade-in">
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-theme-primary text-theme-card px-2 py-1 rounded text-xs whitespace-nowrap z-10 animate-bounce-in">
                         Kopyalandı!
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-theme-primary"></div>
                       </div>
@@ -136,7 +137,7 @@ export function LinksPanel({ linkMap, onRemoveLink, onClearAllLinks }: LinksPane
                   {onRemoveLink && (
                     <button
                       onClick={() => onRemoveLink(link.url)}
-                      className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-500 transition-all hover:bg-red-500/20 cursor-pointer"
+                      className="opacity-0 group-hover:opacity-100 animated-button flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-500 transition-smooth hover:bg-red-500/20 cursor-pointer"
                       title="Linki sil"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -45,7 +45,7 @@ export default function App() {
 
             <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center lg:w-auto">
               <form
-                className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-theme-primary bg-theme-card px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-theme-lg backdrop-blur-sm transition-all hover:shadow-theme-xl"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-theme-primary bg-theme-card px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 shadow-theme-lg backdrop-blur-sm transition-smooth hover:shadow-theme-xl interactive-scale"
                 onSubmit={(e) => {
                   e.preventDefault()
                   void fetchChannel()
@@ -64,7 +64,7 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={!username.trim() || isLoading}
-                  className="inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-theme-md transition-all hover:from-emerald-700 hover:to-cyan-700 hover:shadow-theme-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
+                  className="animated-button button-hover-effect inline-flex items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 text-xs sm:text-sm font-semibold text-white shadow-theme-md transition-smooth hover:from-emerald-700 hover:to-cyan-700 hover:shadow-theme-lg disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
                 >
                   {isLoading ? (
                     <>
