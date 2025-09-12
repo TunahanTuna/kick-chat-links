@@ -10,14 +10,14 @@ export function ThemeToggle() {
       <button
         type="button"
         onClick={toggleTheme}
-        className={`animated-button relative inline-flex h-4 w-7 sm:h-5 sm:w-9 lg:h-6 lg:w-11 items-center rounded-full shadow-lg transition-smooth focus:outline-none focus:ring-1 focus:ring-offset-1 ${
+        className={`relative inline-flex h-4 w-7 sm:h-5 sm:w-9 lg:h-6 lg:w-11 items-center rounded-full shadow-lg focus:outline-none focus:ring-1 focus:ring-offset-1 ${
           theme === 'dark'
             ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl focus:ring-indigo-500' 
             : 'bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 hover:shadow-xl focus:ring-amber-400'
         }`}
         title={theme === 'dark' ? "Açık temaya geç" : "Koyu temaya geç"}
       >
-        <span className={`inline-block h-2.5 w-2.5 sm:h-3 sm:w-3 lg:h-4 lg:w-4 transform rounded-full bg-white shadow-lg transition-bounce ${
+        <span className={`inline-block h-2.5 w-2.5 sm:h-3 sm:w-3 lg:h-4 lg:w-4 transform rounded-full bg-white shadow-lg ${
           theme === 'dark' ? 'translate-x-3.5 sm:translate-x-5 lg:translate-x-6' : 'translate-x-0.5 sm:translate-x-1'
         }`}>
           {theme === 'dark' ? (
@@ -32,7 +32,7 @@ export function ThemeToggle() {
         </span>
       </button>
       
-      <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap transition-colors duration-300 ${
+      <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap ${
         theme === 'dark'
           ? 'text-indigo-200 bg-indigo-900/50' 
           : 'text-amber-700 bg-amber-100'
