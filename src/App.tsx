@@ -1,5 +1,5 @@
 import { LoadingSkeleton, WelcomeScreen, ThemeToggle } from './shared/components'
-import { useChannel, useChatAndLinks } from './shared/hooks'
+import { useChannel, useChatAndLinksWithPersistence } from './shared/hooks'
 import { ChannelInfoPanel } from './features/channel'
 import { ChatPanel } from './features/chat'
 import { LinksPanel, GroupedLinksPanel } from './features/links'
@@ -17,7 +17,7 @@ export default function App() {
     disconnect
   } = useChannel()
 
-  const { messages, linkMap, clearData } = useChatAndLinks(channel)
+  const { messages, linkMap, clearData, clearAllLinks, removeLink } = useChatAndLinksWithPersistence(channel)
 
   const handleDisconnect = () => {
     disconnect()
@@ -166,7 +166,7 @@ export default function App() {
             {/* Links and Chat Grid */}
             <div className="grid gap-2 sm:gap-4 lg:gap-6 2xl:grid-cols-2">
               <div className="order-2 2xl:order-1">
-                <LinksPanel linkMap={linkMap} />
+                <LinksPanel linkMap={linkMap} onRemoveLink={removeLink} onClearAllLinks={clearAllLinks} />
               </div>
               <div className="order-1 2xl:order-2">
                 <ChatPanel messages={messages} />

@@ -4,9 +4,11 @@ import { formatTimeAgo } from '../../shared/utils'
 
 interface LinksPanelProps {
   linkMap: Record<string, LinkStat>
+  onRemoveLink?: (url: string) => void
+  onClearAllLinks?: () => void
 }
 
-export function LinksPanel({ linkMap }: LinksPanelProps) {
+export function LinksPanel({ linkMap, onRemoveLink, onClearAllLinks }: LinksPanelProps) {
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent')
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
   
@@ -31,6 +33,18 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
             <option value="recent">En Yeni</option>
             <option value="popular">En Popüler</option>
           </select>
+          {links.length > 0 && onClearAllLinks && (
+            <button
+              onClick={onClearAllLinks}
+              className="rounded-md sm:rounded-lg border border-red-500 bg-red-500/10 hover:bg-red-500/20 px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              title="Tüm linkleri temizle"
+            >
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span className="hidden sm:inline">Temizle</span>
+            </button>
+          )}
           <div className="flex items-center gap-1 text-xs sm:text-sm text-theme-secondary">
             <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -119,6 +133,17 @@ export function LinksPanel({ linkMap }: LinksPanelProps) {
                       </div>
                     )}
                   </button>
+                  {onRemoveLink && (
+                    <button
+                      onClick={() => onRemoveLink(link.url)}
+                      className="opacity-0 group-hover:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-500 transition-all hover:bg-red-500/20 cursor-pointer"
+                      title="Linki sil"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
