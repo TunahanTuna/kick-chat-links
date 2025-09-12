@@ -9,7 +9,7 @@ export class PusherService {
   private subscription: PusherChannel | null = null
 
   constructor() {
-    this.pusher = new Pusher('32cbd69e4b950bf97679', {
+    this.pusher = new Pusher('32cbd69e4b950bf97679', { // KEY should be public, Changeable in the future
       cluster: 'us2',
       forceTLS: true,
       enabledTransports: ['ws', 'wss'],
